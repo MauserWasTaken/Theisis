@@ -2,42 +2,35 @@ package com.example.thesis.screen
 
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.utils.ScreenUtils
-import com.example.thesis.entity.Player
-import com.example.thesis.generator.RandomGenerator
-import com.example.thesis.render.MapRenderer
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.Viewport
-import com.example.thesis.entity.EnemyGhost
+import com.example.thesis.generator.RandomGenerator
 import com.example.thesis.input.PlayerInput
+import com.example.thesis.render.MapRenderer
 import com.example.thesis.world.GameWorld
-import com.example.thesis.world.TileType
+import com.example.thesis.assets.Assets
 
 class GameScreen : Screen {
 
-    //camera variables
+    // CAMERA
     private val camera = OrthographicCamera()
-    private val generator = RandomGenerator()
-    private val renderer = MapRenderer()
+    private val viewport: Viewport = FitViewport(50f * 16f, 50f * 16f, camera)
 
-    //player variables
-    private lateinit var player: Player
+    // WORLD
     private lateinit var world: GameWorld
+    private val generator = RandomGenerator()
+
+    // INPUT
     private val input = PlayerInput()
     private var moveTimer = 0f
-    private val moveDelay = 0.15f // seconds between moves
+    private val moveDelay = 0.15f
 
-    //player sprite
+    // RENDERING
+    private val renderer = MapRenderer()
     private val batch = SpriteBatch()
-    private val playerTexture = Texture("thesis/Tiles/tile_0087.png")
-
-    //enemy ghost sprite
-    private val enemies = mutableListOf<EnemyGhost>()
-    private val enemyTexture = Texture("thesis/Tiles/tile_0108.png")
-
-    private val viewport: Viewport = FitViewport(50f * 16f, 50f * 16f, camera)
 
     override fun show() {
 
@@ -47,13 +40,11 @@ class GameScreen : Screen {
 
         renderer.build(data)
 
-        val (px, py) = world.findSpawn()
-        player = Player(px, py)
-
         world.spawnEnemies(5)
     }
 
     override fun render(delta: Float) {
+
         ScreenUtils.clear(0.1f, 0.1f, 0.1f, 1f)
 
         handleInput(delta)
@@ -61,20 +52,25 @@ class GameScreen : Screen {
         viewport.apply()
         camera.update()
 
+        // MAP
         renderer.render(camera)
 
+        // ENTITIES
         batch.projectionMatrix = camera.combined
         batch.begin()
 
-        // player
         batch.draw(
-            playerTexture,
-            player.x * 16f,
-            player.y * 16f
+            Assets.player,
+            world.player.x * 16f,
+            world.player.y * 16f
         )
 
         for (enemy in world.enemies) {
-            batch.draw(enemyTexture, enemy.x * 16f, enemy.y * 16f)
+            batch.draw(
+                Assets.enemy,
+                enemy.x * 16f,
+                enemy.y * 16f
+            )
         }
 
         batch.end()
@@ -83,35 +79,28 @@ class GameScreen : Screen {
     private fun handleInput(delta: Float) {
 
         moveTimer -= delta
-
         if (moveTimer > 0f) return
 
         val (dx, dy) = input.movement()
-
         if (dx == 0 && dy == 0) return
 
-        val newX = player.x + dx
-        val newY = player.y + dy
-
-        if (world.canWalk(newX, newY)) {
-            player.move(dx, dy)
-        }
+        world.updatePlayer(dx, dy)
 
         moveTimer = moveDelay
     }
 
     override fun dispose() {
-        renderer.dispose()
 
+        renderer.dispose()
         batch.dispose()
-        playerTexture.dispose()
-        enemyTexture.dispose()
+
+        Assets.dispose()
+
     }
 
     override fun resize(width: Int, height: Int) {
         viewport.update(width, height, true)
     }
-
 
     override fun pause() {}
     override fun resume() {}

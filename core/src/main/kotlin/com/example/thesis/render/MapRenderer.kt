@@ -12,33 +12,29 @@ import com.example.thesis.world.TileMap
 import com.example.thesis.world.TileType
 import com.example.thesis.entity.Player
 
+import com.example.thesis.assets.Assets
+
+
 class MapRenderer {
 
     private lateinit var map: TiledMap
     private lateinit var renderer: OrthogonalTiledMapRenderer
 
-    private val floorTexture = Texture("thesis/Tiles/tile_0048.png")
-    private val wallTexture  = Texture("thesis/Tiles/tile_0014.png")
-
-    private val floorTile = StaticTiledMapTile(TextureRegion(floorTexture))
-    private val wallTile  = StaticTiledMapTile(TextureRegion(wallTexture))
+    private val floorTile = StaticTiledMapTile(TextureRegion(Assets.floor))
+    private val wallTile  = StaticTiledMapTile(TextureRegion(Assets.wall))
 
     private lateinit var data: TileMap
 
-    init {
-        floorTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
-        wallTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
-    }
 
     fun build(data: TileMap) {
         this.data = data
 
         map = TiledMap()
 
-        val layer = TiledMapTileLayer(50, 50, 16, 16)
+        val layer = TiledMapTileLayer(data.width, data.height, 16, 16)
 
-        for (y in 0 until 50) {
-            for (x in 0 until 50) {
+        for (y in 0 until data.height) {
+            for (x in 0 until data.width) {
 
                 val cell = TiledMapTileLayer.Cell()
 
@@ -65,8 +61,5 @@ class MapRenderer {
     fun dispose() {
         renderer.dispose()
         map.dispose()
-
-        floorTexture.dispose()
-        wallTexture.dispose()
     }
 }

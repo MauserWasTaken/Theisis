@@ -3,10 +3,12 @@ package com.example.thesis;
 import com.badlogic.gdx.Game;
 import com.example.thesis.screen.GameScreen;
 
-public class Main extends Game {
+import com.example.thesis.assets.Assets;
 
-    @Override
-    public void create() {
-        setScreen(new GameScreen());
+class Main : Game() {
+
+    override fun create() {
+        Assets.load()
+        setScreen(GameScreen())
     }
 }
