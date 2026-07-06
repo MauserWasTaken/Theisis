@@ -50,6 +50,8 @@ class GameScreen : Screen {
         viewport.apply()
         camera.update()
 
+        world.updateEnemies(delta)
+
         // MAP
         renderer.render(camera)
 
