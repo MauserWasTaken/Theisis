@@ -1,18 +1,22 @@
 package com.example.thesis.world
 
+import com.example.thesis.data.LevelData
 import com.example.thesis.entity.EnemyGhost
 import com.example.thesis.entity.Player
 
-class GameWorld(
-    val map: TileMap
-) {
+class GameWorld(level: LevelData) {
 
-    val player: Player
+    val map: TileMap = level.map
+
+    val player: Player =
+        Player(level.playerSpawn.first, level.playerSpawn.second)
+
     val enemies = mutableListOf<EnemyGhost>()
 
     init {
-        val spawn = findSpawnInternal()
-        player = Player(spawn.first, spawn.second)
+        for ((x, y) in level.enemySpawns) {
+            enemies.add(EnemyGhost(x, y))
+        }
     }
 
     fun updatePlayer(dx: Int, dy: Int) {
@@ -31,41 +35,5 @@ class GameWorld(
         if (y !in 0 until map.height) return false
 
         return map[x, y] == TileType.FLOOR
-    }
-
-    fun spawnEnemies(count: Int) {
-
-        val tiles = getSpawnableTiles().shuffled()
-        val spawnCount = minOf(count, tiles.size)
-
-        repeat(spawnCount) { i ->
-            val (x, y) = tiles[i]
-            enemies.add(EnemyGhost(x, y))
-        }
-    }
-
-    fun findSpawn(): Pair<Int, Int> {
-        return getSpawnableTiles().random()
-    }
-
-    // ---------------- PRIVATE HELPERS ----------------
-
-    private fun findSpawnInternal(): Pair<Int, Int> {
-        return getSpawnableTiles().random()
-    }
-
-    private fun getSpawnableTiles(): List<Pair<Int, Int>> {
-
-        val list = mutableListOf<Pair<Int, Int>>()
-
-        for (y in 0 until map.height) {
-            for (x in 0 until map.width) {
-                if (map[x, y] == TileType.FLOOR) {
-                    list.add(x to y)
-                }
-            }
-        }
-
-        return list
     }
 }

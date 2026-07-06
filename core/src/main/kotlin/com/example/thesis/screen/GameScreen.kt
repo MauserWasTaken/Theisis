@@ -34,13 +34,11 @@ class GameScreen : Screen {
 
     override fun show() {
 
-        val data = generator.generate(50, 50)
+        val level = generator.generate(50, 50)
 
-        world = GameWorld(data)
+        world = GameWorld(level)
 
-        renderer.build(data)
-
-        world.spawnEnemies(5)
+        renderer.build(level.map)
     }
 
     override fun render(delta: Float) {
