@@ -1,9 +1,10 @@
 package com.example.thesis.entity
 
 class Player(
-    var x: Int,
-    var y: Int
-) {
+    override var x: Int,
+    override var y: Int
+) : Movable {
+
     fun move(dx: Int, dy: Int) {
         x += dx
         y += dy

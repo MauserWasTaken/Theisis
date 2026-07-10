@@ -1,6 +1,7 @@
 package com.example.thesis.world
 
 import com.example.thesis.data.LevelData
+import com.example.thesis.entity.Enemy
 import com.example.thesis.entity.EnemyGhost
 import com.example.thesis.entity.Player
 
@@ -11,7 +12,7 @@ class GameWorld(level: LevelData) {
     val player: Player =
         Player(level.playerSpawn.first, level.playerSpawn.second)
 
-    val enemies = mutableListOf<EnemyGhost>()
+    val enemies = mutableListOf<Enemy>()
 
     private var enemyMoveTimer = 0f
     private val enemyMoveDelay = 0.5f
