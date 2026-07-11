@@ -5,7 +5,7 @@ class Player(
     override var y: Int
 ) : Movable {
 
-    var maxHp = 5
+    var maxHp = 3
     var hp = maxHp
 
     var invincibleTimer = 0f

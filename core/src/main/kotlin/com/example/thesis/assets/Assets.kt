@@ -1,6 +1,7 @@
 package com.example.thesis.assets
 
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.Pixmap
 
 object Assets {
 
@@ -17,6 +18,9 @@ object Assets {
         private set
 
     lateinit var wall: Texture
+        private set
+
+    lateinit var uiBackground: Texture
         private set
 
 
@@ -36,6 +40,20 @@ object Assets {
         enemy.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
         floor.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
         wall.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
+
+        val pixmap = Pixmap(
+            1,
+            1,
+            Pixmap.Format.RGBA8888
+        )
+
+        pixmap.setColor(0f,0f,0f,1f)
+        pixmap.fill()
+
+        uiBackground = Texture(pixmap)
+
+        pixmap.dispose()
+
     }
 
 
@@ -47,5 +65,6 @@ object Assets {
         enemy.dispose()
         floor.dispose()
         wall.dispose()
+        uiBackground.dispose()
     }
 }

@@ -14,12 +14,22 @@ import com.example.thesis.world.GameWorld
 import com.example.thesis.assets.Assets
 import com.example.thesis.system.CombatSystem
 import com.badlogic.gdx.Gdx
+import com.example.thesis.ui.UiRenderer
 
 class GameScreen : Screen {
 
     // CAMERA
     private val camera = OrthographicCamera()
-    private val viewport: Viewport = FitViewport(50f * 16f, 50f * 16f, camera)
+    private val uiHeight = 64f
+
+    private val worldWidth = 50f * 16f
+    private val worldHeight = 50f * 16f
+
+    private val viewport: Viewport = FitViewport(
+        worldWidth,
+        worldHeight,
+        camera
+    )
 
     // WORLD
     private lateinit var world: GameWorld
@@ -35,10 +45,13 @@ class GameScreen : Screen {
     // RENDERING
     private val renderer = MapRenderer()
     private val batch = SpriteBatch()
+    private val uiRenderer = UiRenderer(batch)
 
     override fun show() {
 
-        val level = generator.generate(50, 50)
+        val level = generator.generate(50, 40)
+
+        camera.setToOrtho(false)
 
         world = GameWorld(level)
 
@@ -78,16 +91,6 @@ class GameScreen : Screen {
             world.player.y * 16f
         )
 
-        // HP display
-        for(i in 0 until world.player.hp) {
-
-            batch.draw(
-                Assets.playerHp,
-                i * tileSize,
-                50 * tileSize - tileSize * 2
-            )
-        }
-
         for (enemy in world.enemies) {
             batch.draw(
                 Assets.enemy,
@@ -97,6 +100,9 @@ class GameScreen : Screen {
         }
 
         batch.end()
+
+        // UI CAMERA
+        uiRenderer.render(world)
     }
 
     private fun handleInput(delta: Float) {
@@ -121,8 +127,19 @@ class GameScreen : Screen {
 
     }
 
+
     override fun resize(width: Int, height: Int) {
-        viewport.update(width, height, true)
+
+        viewport.update(
+            width,
+            height - uiHeight.toInt(),
+            true
+        )
+
+        viewport.screenY = uiHeight.toInt()
+        viewport.screenHeight = height - uiHeight.toInt()
+
+        uiRenderer.resize(width, height)
     }
 
     override fun pause() {}
