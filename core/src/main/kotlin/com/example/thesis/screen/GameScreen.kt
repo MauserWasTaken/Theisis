@@ -12,6 +12,8 @@ import com.example.thesis.input.PlayerInput
 import com.example.thesis.render.MapRenderer
 import com.example.thesis.world.GameWorld
 import com.example.thesis.assets.Assets
+import com.example.thesis.system.CombatSystem
+import com.badlogic.gdx.Gdx
 
 class GameScreen : Screen {
 
@@ -22,6 +24,8 @@ class GameScreen : Screen {
     // WORLD
     private lateinit var world: GameWorld
     private val generator = RandomGenerator()
+    private val combatSystem = CombatSystem()
+    private val tileSize = 16f
 
     // INPUT
     private val input = PlayerInput()
@@ -51,12 +55,21 @@ class GameScreen : Screen {
         camera.update()
 
         world.updateEnemies(delta)
+        world.player.update(delta)
+        combatSystem.update(world)
+
+        if(world.player.isDead()) {
+            Gdx.app.exit()
+            return
+        }
 
         // MAP
         renderer.render(camera)
 
         // ENTITIES
         batch.projectionMatrix = camera.combined
+
+
         batch.begin()
 
         batch.draw(
@@ -64,6 +77,16 @@ class GameScreen : Screen {
             world.player.x * 16f,
             world.player.y * 16f
         )
+
+        // HP display
+        for(i in 0 until world.player.hp) {
+
+            batch.draw(
+                Assets.playerHp,
+                i * tileSize,
+                50 * tileSize - tileSize * 2
+            )
+        }
 
         for (enemy in world.enemies) {
             batch.draw(

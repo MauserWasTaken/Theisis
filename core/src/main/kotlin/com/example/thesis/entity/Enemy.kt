@@ -14,5 +14,21 @@ abstract class Enemy(
 
     var cooldown = 0.5f
 
+    var stunTimer = 0f
+
+    fun stun(duration: Float) {
+        stunTimer = duration
+    }
+
+    fun isStunned(): Boolean {
+        return stunTimer > 0f
+    }
+
+    fun updateStun(delta: Float) {
+        if (stunTimer > 0f) {
+            stunTimer -= delta
+        }
+    }
+
     abstract override fun update(delta: Float, world: GameWorld)
 }

@@ -5,8 +5,36 @@ class Player(
     override var y: Int
 ) : Movable {
 
-    fun move(dx: Int, dy: Int) {
-        x += dx
-        y += dy
+    var maxHp = 5
+    var hp = maxHp
+
+    var invincibleTimer = 0f
+
+    fun update(delta: Float) {
+        if (invincibleTimer > 0) {
+            invincibleTimer -= delta
+        }
+    }
+
+    fun canTakeDamage(): Boolean {
+        return invincibleTimer <= 0
+    }
+
+    fun takeDamage(amount: Int): Boolean {
+
+        if (!canTakeDamage()) {
+            return false
+        }
+
+        hp -= amount
+
+        invincibleTimer = 2f
+
+        return true
+    }
+
+
+    fun isDead(): Boolean {
+        return hp <= 0
     }
 }

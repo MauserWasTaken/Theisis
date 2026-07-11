@@ -11,6 +11,12 @@ class EnemyGhost(
 
     override fun update(delta: Float, world: GameWorld) {
 
+        updateStun(delta)
+
+        if (isStunned()) {
+            return
+        }
+
         cooldown -= delta
 
         if (cooldown > 0) return
