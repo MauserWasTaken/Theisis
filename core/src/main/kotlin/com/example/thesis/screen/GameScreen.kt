@@ -15,6 +15,7 @@ import com.example.thesis.assets.Assets
 import com.example.thesis.system.CombatSystem
 import com.badlogic.gdx.Gdx
 import com.example.thesis.ui.UiRenderer
+import com.example.thesis.world.LevelManager
 
 class GameScreen : Screen {
 
@@ -33,9 +34,9 @@ class GameScreen : Screen {
 
     // WORLD
     private lateinit var world: GameWorld
-    private val generator = RandomGenerator()
     private val combatSystem = CombatSystem()
     private val tileSize = 16f
+    private val levelManager = LevelManager()
 
     // INPUT
     private val input = PlayerInput()
@@ -49,9 +50,11 @@ class GameScreen : Screen {
 
     override fun show() {
 
-        val level = generator.generate(50, 40)
-
         camera.setToOrtho(false)
+
+
+        val level = levelManager.current()
+
 
         world = GameWorld(level)
 
@@ -68,6 +71,34 @@ class GameScreen : Screen {
         camera.update()
 
         world.player.update(delta)
+
+
+        val door = world.getPlayerDoor()
+
+        if(door != null) {
+
+
+            val newLevel =
+                levelManager.enterDoor(door)
+
+
+            world = GameWorld(newLevel)
+
+
+            val targetDoor =
+                newLevel.doors[door.connectedDoor]
+
+
+            val spawn = world.getSpawnPositionNearDoor(targetDoor)
+
+            world.player.x = spawn.first
+            world.player.y = spawn.second
+
+
+            renderer.build(newLevel.map)
+
+            return
+        }
 
         world.updateEnemies(delta)
 

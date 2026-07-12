@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.ui.Table.Debug.cell
 import com.example.thesis.world.TileMap
 import com.example.thesis.world.TileType
 import com.example.thesis.entity.Player
@@ -25,23 +26,39 @@ class MapRenderer {
 
     private lateinit var data: TileMap
 
+    private val doorTile =
+        StaticTiledMapTile(TextureRegion(Assets.door))
 
     fun build(data: TileMap) {
         this.data = data
 
         map = TiledMap()
 
-        val layer = TiledMapTileLayer(data.width, data.height, 16, 16)
+        val layer = TiledMapTileLayer(
+            data.width,
+            data.height,
+            16,
+            16
+        )
 
         for (y in 0 until data.height) {
             for (x in 0 until data.width) {
 
                 val cell = TiledMapTileLayer.Cell()
 
-                if (data.get(x, y) == TileType.WALL) {
-                    cell.setTile(wallTile)
-                } else {
-                    cell.setTile(floorTile)
+                when(data.get(x,y)) {
+
+                    TileType.WALL -> {
+                        cell.setTile(wallTile)
+                    }
+
+                    TileType.DOOR -> {
+                        cell.setTile(doorTile)
+                    }
+
+                    else -> {
+                        cell.setTile(floorTile)
+                    }
                 }
 
                 layer.setCell(x, y, cell)

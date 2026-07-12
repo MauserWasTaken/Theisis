@@ -34,6 +34,9 @@ object Assets {
     lateinit var weaponSlot: Texture
         private set
 
+    lateinit var door: Texture
+        private set
+
 
     fun load() {
 
@@ -44,6 +47,8 @@ object Assets {
         floor = Texture("thesis/Tiles/tile_0048.png")
         wall = Texture("thesis/Tiles/tile_0014.png")
         sword = Texture("thesis/Tiles/tile_0104.png")
+        door = Texture("thesis/Tiles/tile_0021.png")
+
         swordRegion = TextureRegion(sword)
 
 

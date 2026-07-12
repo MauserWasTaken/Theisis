@@ -1,25 +1,34 @@
 package com.example.thesis.world
 
+import com.example.thesis.data.DoorData
 import com.example.thesis.data.LevelData
 import com.example.thesis.entity.Enemy
 import com.example.thesis.entity.EnemyGhost
 import com.example.thesis.entity.Player
 
-class GameWorld(level: LevelData) {
+class GameWorld(
+    private val level: LevelData
+) {
 
     val map: TileMap = level.map
 
-    val player: Player =
-        Player(level.playerSpawn.first, level.playerSpawn.second)
+    val player = Player(
+        level.playerSpawn.first,
+        level.playerSpawn.second
+    )
 
     val enemies = mutableListOf<Enemy>()
 
-    private var enemyMoveTimer = 0f
-    private val enemyMoveDelay = 0.5f
-
     init {
-        for ((x, y) in level.enemySpawns) {
-            enemies.add(EnemyGhost(x, y))
+
+        for(enemy in level.enemies) {
+
+            enemies.add(
+                EnemyGhost(
+                    enemy.x,
+                    enemy.y
+                )
+            )
         }
     }
 
@@ -45,7 +54,7 @@ class GameWorld(level: LevelData) {
         if (x !in 0 until map.width) return false
         if (y !in 0 until map.height) return false
 
-        return map[x, y] == TileType.FLOOR
+        return map[x,y] == TileType.FLOOR || map[x,y] == TileType.DOOR
     }
 
     fun getWalkableNeighbors(x: Int, y: Int): List<Pair<Int, Int>> {
@@ -70,5 +79,41 @@ class GameWorld(level: LevelData) {
         }
 
         return result
+    }
+
+    fun getPlayerDoor(): DoorData? {
+
+
+        return level.doors.firstOrNull {
+
+            it.x == player.x &&
+                it.y == player.y
+
+        }
+    }
+
+    fun getSpawnPositionNearDoor(door: DoorData): Pair<Int, Int> {
+
+        val directions = listOf(
+            0 to 1,   // up
+            0 to -1,  // down
+            1 to 0,   // right
+            -1 to 0   // left
+        )
+
+
+        for ((dx, dy) in directions) {
+
+            val x = door.x + dx
+            val y = door.y + dy
+
+            if (canWalk(x, y) && map[x, y] != TileType.DOOR) {
+                return x to y
+            }
+        }
+
+
+        // fallback (should not happen)
+        return door.x to door.y
     }
 }
