@@ -21,6 +21,7 @@ class UiRenderer(
 
     private val barHeight = 64f
 
+    private val tileSize = 16f
 
     fun resize(width: Int, height: Int) {
         viewport.update(width, height, true)
@@ -57,6 +58,27 @@ class UiRenderer(
                 16f
             )
         }
+
+        // weapon slot background
+
+        batch.draw(
+            Assets.weaponSlot,
+            400f - tileSize,
+            600f - 48f,
+            tileSize,
+            tileSize
+        )
+
+
+        // equipped weapon
+
+        batch.draw(
+            Assets.sword,
+            400f - tileSize,
+            600f - 48f,
+            tileSize,
+            tileSize
+        )
 
 
         batch.end()

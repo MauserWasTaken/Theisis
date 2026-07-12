@@ -16,19 +16,33 @@ abstract class Enemy(
 
     var stunTimer = 0f
 
+    var hp = 1
+
+
+    fun takeDamage(amount: Int): Boolean {
+
+        hp -= amount
+
+        return hp <= 0
+    }
+
+
     fun stun(duration: Float) {
         stunTimer = duration
     }
 
+
     fun isStunned(): Boolean {
         return stunTimer > 0f
     }
+
 
     fun updateStun(delta: Float) {
         if (stunTimer > 0f) {
             stunTimer -= delta
         }
     }
+
 
     abstract override fun update(delta: Float, world: GameWorld)
 }

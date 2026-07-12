@@ -67,8 +67,10 @@ class GameScreen : Screen {
         viewport.apply()
         camera.update()
 
-        world.updateEnemies(delta)
         world.player.update(delta)
+
+        world.updateEnemies(delta)
+
         combatSystem.update(world)
 
         if(world.player.isDead()) {
@@ -91,6 +93,25 @@ class GameScreen : Screen {
             world.player.y * 16f
         )
 
+        if(world.player.isAttacking()) {
+
+            val(posX,posY)=world.player.attackPosition()
+
+
+            batch.draw(
+                Assets.swordRegion,
+                posX * 16f,
+                posY * 16f,
+                8f,
+                8f,
+                16f,
+                16f,
+                1f,
+                1f,
+                world.player.attackRotation()
+            )
+        }
+
         for (enemy in world.enemies) {
             batch.draw(
                 Assets.enemy,
@@ -107,15 +128,34 @@ class GameScreen : Screen {
 
     private fun handleInput(delta: Float) {
 
+
         moveTimer -= delta
-        if (moveTimer > 0f) return
 
-        val (dx, dy) = input.movement()
-        if (dx == 0 && dy == 0) return
 
-        world.updatePlayer(dx, dy)
+        if(moveTimer <= 0) {
 
-        moveTimer = moveDelay
+            val(dx,dy)=input.movement()
+
+            if(dx !=0 || dy !=0){
+
+                world.player.setDirection(dx,dy)
+
+                world.updatePlayer(dx,dy)
+
+                moveTimer = moveDelay
+            }
+        }
+
+
+        val attackDirection = input.attackDirection()
+
+        if(attackDirection != null) {
+
+            world.player.attack(
+                attackDirection.first,
+                attackDirection.second
+            )
+        }
     }
 
     override fun dispose() {

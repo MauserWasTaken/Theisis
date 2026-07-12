@@ -2,6 +2,7 @@ package com.example.thesis.assets
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 
 object Assets {
 
@@ -23,15 +24,27 @@ object Assets {
     lateinit var uiBackground: Texture
         private set
 
+    lateinit var sword: Texture
+        private set
+
+    lateinit var swordRegion: TextureRegion
+        private set
+
+
+    lateinit var weaponSlot: Texture
+        private set
+
 
     fun load() {
 
         player = Texture("thesis/Tiles/tile_0087.png")
         playerHp = Texture("thesis/Tiles/tile_0102.png")
 
-        enemy  = Texture("thesis/Tiles/tile_0108.png")
-        floor  = Texture("thesis/Tiles/tile_0048.png")
-        wall   = Texture("thesis/Tiles/tile_0014.png")
+        enemy = Texture("thesis/Tiles/tile_0108.png")
+        floor = Texture("thesis/Tiles/tile_0048.png")
+        wall = Texture("thesis/Tiles/tile_0014.png")
+        sword = Texture("thesis/Tiles/tile_0104.png")
+        swordRegion = TextureRegion(sword)
 
 
         player.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
@@ -40,6 +53,8 @@ object Assets {
         enemy.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
         floor.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
         wall.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
+
+        sword.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
 
         val pixmap = Pixmap(
             1,
@@ -52,7 +67,19 @@ object Assets {
 
         uiBackground = Texture(pixmap)
 
+        val pixmap2 = Pixmap(
+            1,
+            1,
+            Pixmap.Format.RGBA8888
+        )
+
+        pixmap2.setColor(0.5804f, 0.5412f, 0.4078f, 1f)
+        pixmap2.fill()
+
+        weaponSlot = Texture(pixmap2)
+
         pixmap.dispose()
+        pixmap2.dispose()
 
     }
 

@@ -18,4 +18,27 @@ class PlayerInput {
 
         return Pair(dx, dy)
     }
+
+    fun attackDirection(): Pair<Int,Int>? {
+
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
+            return 0 to 1
+
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
+            return 0 to -1
+
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
+            return -1 to 0
+
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
+            return 1 to 0
+
+
+        return null
+    }
+
 }
