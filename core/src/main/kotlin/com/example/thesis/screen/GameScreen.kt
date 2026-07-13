@@ -80,29 +80,13 @@ class GameScreen : Screen {
 
         if(door != null && doorCooldown <= 0f) {
 
-            world.saveState()
+            world =
+                levelManager.changeLevel(
+                    world,
+                    door
+                )
 
-            val newLevel =
-                levelManager.enterDoor(door)
-
-
-            world = GameWorld(newLevel)
-
-
-            val targetDoor =
-                newLevel.doors[door.connectedDoor]
-
-
-            val spawn =
-                world.getSpawnPositionNearDoor(targetDoor)
-
-
-            world.player.x = spawn.first
-            world.player.y = spawn.second
-
-
-            renderer.build(newLevel.map)
-
+            renderer.build(world.map)
 
             doorCooldown = 0.5f
 

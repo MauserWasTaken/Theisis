@@ -70,6 +70,39 @@ class LevelManager {
         return level.doors[doorId]
     }
 
+    fun changeLevel(
+        currentWorld: GameWorld,
+        door: DoorData
+    ): GameWorld {
+
+        // save old level
+        currentWorld.saveState()
+
+
+        // load destination
+        val newLevel = enterDoor(door)
+
+
+        val newWorld = GameWorld(newLevel)
+
+
+        // find connected door
+        val targetDoor =
+            newLevel.doors[door.connectedDoor]
+
+
+        // spawn next to it
+        val spawn =
+            newWorld.getSpawnPositionNearDoor(targetDoor)
+
+
+        newWorld.player.x = spawn.first
+        newWorld.player.y = spawn.second
+
+
+        return newWorld
+    }
+
 
     fun current():LevelData {
 
