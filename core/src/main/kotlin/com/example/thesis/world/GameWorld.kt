@@ -8,6 +8,9 @@ import com.example.thesis.entity.Player
 import com.example.thesis.data.SavedEnemy
 import com.example.thesis.data.SavedBarrel
 import com.example.thesis.entity.Barrel
+import com.example.thesis.entity.Potion
+import com.example.thesis.data.SavedPotion
+
 
 class GameWorld(
     val level: LevelData
@@ -23,6 +26,8 @@ class GameWorld(
     val enemies = mutableListOf<Enemy>()
 
     val barrels = mutableListOf<Barrel>()
+
+    val potions = mutableListOf<Potion>()
 
     init {
 
@@ -44,6 +49,16 @@ class GameWorld(
                 Barrel(
                     barrel.x,
                     barrel.y
+                )
+            )
+        }
+
+        for(potion in level.potions){
+
+            potions.add(
+                Potion(
+                    potion.x,
+                    potion.y
                 )
             )
         }
@@ -171,6 +186,39 @@ class GameWorld(
                     barrel.y
                 )
             )
+        }
+
+        level.potions.clear()
+
+        for(potion in potions){
+
+            level.potions.add(
+                SavedPotion(
+                    potion.x,
+                    potion.y
+                )
+            )
+        }
+    }
+
+    fun pickupPotion(){
+
+        val iterator = potions.iterator()
+
+        while(iterator.hasNext()){
+
+            val potion = iterator.next()
+
+            if(
+                potion.x == player.x &&
+                potion.y == player.y
+            ){
+
+                //player.heal(3)
+
+                iterator.remove()
+
+            }
         }
     }
 }

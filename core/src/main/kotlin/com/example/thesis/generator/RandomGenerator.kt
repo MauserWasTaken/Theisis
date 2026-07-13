@@ -95,6 +95,7 @@ class RandomGenerator {
             playerSpawn = playerSpawn,
             enemies = enemies,
             barrels = barrels,
+            potions = mutableListOf(),
             doors = doors
         )
     }

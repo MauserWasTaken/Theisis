@@ -73,6 +73,8 @@ class GameScreen : Screen {
 
         world.player.update(delta)
 
+        world.pickupPotion()
+
         doorCooldown -= delta
 
 
@@ -150,6 +152,15 @@ class GameScreen : Screen {
                 Assets.enemy,
                 enemy.x * 16f,
                 enemy.y * 16f
+            )
+        }
+
+        for(potion in world.potions){
+
+            batch.draw(
+                Assets.potion,
+                potion.x * 16f,
+                potion.y * 16f
             )
         }
 

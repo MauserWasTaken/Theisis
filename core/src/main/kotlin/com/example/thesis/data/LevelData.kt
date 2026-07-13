@@ -4,13 +4,15 @@ import com.example.thesis.world.TileMap
 
 data class LevelData(
 
-    val map:TileMap,
+    val map: TileMap,
 
-    val playerSpawn:Pair<Int,Int>,
+    val playerSpawn: Pair<Int,Int>,
 
-    var enemies:MutableList<SavedEnemy>,
+    var enemies: MutableList<SavedEnemy>,
 
     var barrels: MutableList<SavedBarrel>,
+
+    var potions: MutableList<SavedPotion>,
 
     val doors: MutableList<DoorData>
 )

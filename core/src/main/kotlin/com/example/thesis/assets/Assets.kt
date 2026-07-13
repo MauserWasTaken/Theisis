@@ -40,6 +40,9 @@ object Assets {
     lateinit var barrel: Texture
         private set
 
+    lateinit var potion: Texture
+        private set
+
 
     fun load() {
 
@@ -52,6 +55,7 @@ object Assets {
         sword = Texture("thesis/Tiles/tile_0104.png")
         door = Texture("thesis/Tiles/tile_0021.png")
         barrel = Texture("thesis/Tiles/tile_0082.png")
+        potion = Texture("thesis/Tiles/tile_0127.png")
 
         swordRegion = TextureRegion(sword)
 
@@ -63,6 +67,7 @@ object Assets {
         floor.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
         wall.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
         barrel.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
+        potion.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
 
         sword.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
 

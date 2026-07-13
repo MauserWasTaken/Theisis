@@ -1,5 +1,6 @@
 package com.example.thesis.system
 
+import com.example.thesis.entity.Potion
 import com.example.thesis.world.GameWorld
 
 class CombatSystem {
@@ -59,7 +60,20 @@ class CombatSystem {
                     barrel.x == attackPos.first &&
                     barrel.y == attackPos.second
                 ){
+
                     barrelIterator.remove()
+
+
+                    // 30% chance to spawn potion
+                    if(kotlin.random.Random.nextFloat() < 0.3f){
+
+                        world.potions.add(
+                            Potion(
+                                barrel.x,
+                                barrel.y
+                            )
+                        )
+                    }
                 }
             }
         }
