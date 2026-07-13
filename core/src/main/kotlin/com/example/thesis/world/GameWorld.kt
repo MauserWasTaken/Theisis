@@ -6,6 +6,8 @@ import com.example.thesis.entity.Enemy
 import com.example.thesis.entity.EnemyGhost
 import com.example.thesis.entity.Player
 import com.example.thesis.data.SavedEnemy
+import com.example.thesis.data.SavedBarrel
+import com.example.thesis.entity.Barrel
 
 class GameWorld(
     val level: LevelData
@@ -20,6 +22,8 @@ class GameWorld(
 
     val enemies = mutableListOf<Enemy>()
 
+    val barrels = mutableListOf<Barrel>()
+
     init {
 
         for(enemy in level.enemies) {
@@ -32,6 +36,16 @@ class GameWorld(
             ghost.hp = enemy.hp
 
             enemies.add(ghost)
+        }
+
+        for(barrel in level.barrels){
+
+            barrels.add(
+                Barrel(
+                    barrel.x,
+                    barrel.y
+                )
+            )
         }
     }
 
@@ -53,11 +67,22 @@ class GameWorld(
         }
     }
 
-    fun canWalk(x: Int, y: Int): Boolean {
-        if (x !in 0 until map.width) return false
-        if (y !in 0 until map.height) return false
+    fun canWalk(x:Int,y:Int):Boolean {
 
-        return map[x,y] == TileType.FLOOR || map[x,y] == TileType.DOOR
+        if(x !in 0 until map.width) return false
+        if(y !in 0 until map.height) return false
+
+
+        if(barrels.any {
+                it.x == x && it.y == y
+            })
+        {
+            return false
+        }
+
+
+        return map[x,y] == TileType.FLOOR ||
+            map[x,y] == TileType.DOOR
     }
 
     fun getWalkableNeighbors(x: Int, y: Int): List<Pair<Int, Int>> {
@@ -120,17 +145,30 @@ class GameWorld(
         return door.x to door.y
     }
 
-    fun saveState() {
+    fun saveState(){
 
         level.enemies.clear()
 
-        for(enemy in enemies) {
+        for(enemy in enemies){
 
             level.enemies.add(
                 SavedEnemy(
-                    x = enemy.x,
-                    y = enemy.y,
-                    hp = enemy.hp
+                    enemy.x,
+                    enemy.y,
+                    enemy.hp
+                )
+            )
+        }
+
+
+        level.barrels.clear()
+
+        for(barrel in barrels){
+
+            level.barrels.add(
+                SavedBarrel(
+                    barrel.x,
+                    barrel.y
                 )
             )
         }

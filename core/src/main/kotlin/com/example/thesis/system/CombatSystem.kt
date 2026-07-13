@@ -48,6 +48,20 @@ class CombatSystem {
                     }
                 }
             }
+
+            val barrelIterator = world.barrels.iterator()
+
+            while(barrelIterator.hasNext()){
+
+                val barrel = barrelIterator.next()
+
+                if(
+                    barrel.x == attackPos.first &&
+                    barrel.y == attackPos.second
+                ){
+                    barrelIterator.remove()
+                }
+            }
         }
     }
 }

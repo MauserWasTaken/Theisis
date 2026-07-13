@@ -10,5 +10,7 @@ data class LevelData(
 
     var enemies:MutableList<SavedEnemy>,
 
+    var barrels: MutableList<SavedBarrel>,
+
     val doors: MutableList<DoorData>
 )

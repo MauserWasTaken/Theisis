@@ -136,6 +136,15 @@ class GameScreen : Screen {
             )
         }
 
+        for(barrel in world.barrels){
+
+            batch.draw(
+                Assets.barrel,
+                barrel.x * 16f,
+                barrel.y * 16f
+            )
+        }
+
         for (enemy in world.enemies) {
             batch.draw(
                 Assets.enemy,

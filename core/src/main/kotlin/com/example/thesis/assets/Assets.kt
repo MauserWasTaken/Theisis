@@ -37,6 +37,9 @@ object Assets {
     lateinit var door: Texture
         private set
 
+    lateinit var barrel: Texture
+        private set
+
 
     fun load() {
 
@@ -48,6 +51,7 @@ object Assets {
         wall = Texture("thesis/Tiles/tile_0014.png")
         sword = Texture("thesis/Tiles/tile_0104.png")
         door = Texture("thesis/Tiles/tile_0021.png")
+        barrel = Texture("thesis/Tiles/tile_0082.png")
 
         swordRegion = TextureRegion(sword)
 
@@ -58,6 +62,7 @@ object Assets {
         enemy.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
         floor.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
         wall.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
+        barrel.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
 
         sword.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest)
 

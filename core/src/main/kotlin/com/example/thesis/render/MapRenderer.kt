@@ -24,6 +24,9 @@ class MapRenderer {
     private val floorTile = StaticTiledMapTile(TextureRegion(Assets.floor))
     private val wallTile  = StaticTiledMapTile(TextureRegion(Assets.wall))
 
+    private val barrelTile =
+        StaticTiledMapTile(TextureRegion(Assets.barrel))
+
     private lateinit var data: TileMap
 
     private val doorTile =
@@ -54,6 +57,10 @@ class MapRenderer {
 
                     TileType.DOOR -> {
                         cell.setTile(doorTile)
+                    }
+
+                    TileType.BARREL -> {
+                        cell.setTile(barrelTile)
                     }
 
                     else -> {

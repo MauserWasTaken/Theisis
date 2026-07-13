@@ -8,5 +8,6 @@ enum class TileType {
     PLAYER,
     EXIT,
     ENEMY,
-    TREASURE
+    TREASURE,
+    BARREL
 }

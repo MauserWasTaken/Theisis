@@ -2,6 +2,7 @@ package com.example.thesis.generator
 
 import com.example.thesis.data.DoorData
 import com.example.thesis.data.LevelData
+import com.example.thesis.data.SavedBarrel
 import com.example.thesis.data.SavedEnemy
 import com.example.thesis.world.TileMap
 import com.example.thesis.world.TileType
@@ -51,6 +52,7 @@ class RandomGenerator {
         )
 
 
+
         floorTiles.shuffle()
 
 
@@ -71,12 +73,28 @@ class RandomGenerator {
             }
             .toMutableList()
 
+        val barrels = floorTiles
+            .drop(6)
+            .shuffled()
+            .take(10)
+            .map {
+                SavedBarrel(
+                    x = it.first,
+                    y = it.second
+                )
+            }
+            .toMutableList()
+
+        floorTiles.removeAll(
+            barrels.map { it.x to it.y }
+        )
 
 
         return LevelData(
             map = map,
             playerSpawn = playerSpawn,
             enemies = enemies,
+            barrels = barrels,
             doors = doors
         )
     }
