@@ -5,9 +5,10 @@ import com.example.thesis.data.LevelData
 import com.example.thesis.entity.Enemy
 import com.example.thesis.entity.EnemyGhost
 import com.example.thesis.entity.Player
+import com.example.thesis.data.SavedEnemy
 
 class GameWorld(
-    private val level: LevelData
+    val level: LevelData
 ) {
 
     val map: TileMap = level.map
@@ -23,12 +24,14 @@ class GameWorld(
 
         for(enemy in level.enemies) {
 
-            enemies.add(
-                EnemyGhost(
-                    enemy.x,
-                    enemy.y
-                )
+            val ghost = EnemyGhost(
+                enemy.x,
+                enemy.y
             )
+
+            ghost.hp = enemy.hp
+
+            enemies.add(ghost)
         }
     }
 
@@ -115,5 +118,21 @@ class GameWorld(
 
         // fallback (should not happen)
         return door.x to door.y
+    }
+
+    fun saveState() {
+
+        level.enemies.clear()
+
+        for(enemy in enemies) {
+
+            level.enemies.add(
+                SavedEnemy(
+                    x = enemy.x,
+                    y = enemy.y,
+                    hp = enemy.hp
+                )
+            )
+        }
     }
 }

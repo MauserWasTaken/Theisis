@@ -37,6 +37,7 @@ class GameScreen : Screen {
     private val combatSystem = CombatSystem()
     private val tileSize = 16f
     private val levelManager = LevelManager()
+    private var doorCooldown = 0f
 
     // INPUT
     private val input = PlayerInput()
@@ -72,11 +73,14 @@ class GameScreen : Screen {
 
         world.player.update(delta)
 
+        doorCooldown -= delta
+
 
         val door = world.getPlayerDoor()
 
-        if(door != null) {
+        if(door != null && doorCooldown <= 0f) {
 
+            world.saveState()
 
             val newLevel =
                 levelManager.enterDoor(door)
@@ -89,13 +93,18 @@ class GameScreen : Screen {
                 newLevel.doors[door.connectedDoor]
 
 
-            val spawn = world.getSpawnPositionNearDoor(targetDoor)
+            val spawn =
+                world.getSpawnPositionNearDoor(targetDoor)
+
 
             world.player.x = spawn.first
             world.player.y = spawn.second
 
 
             renderer.build(newLevel.map)
+
+
+            doorCooldown = 0.5f
 
             return
         }
