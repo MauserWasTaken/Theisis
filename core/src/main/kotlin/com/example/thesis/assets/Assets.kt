@@ -3,6 +3,7 @@ package com.example.thesis.assets
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.example.thesis.world.WallVariant
 
 object Assets {
 
@@ -43,6 +44,17 @@ object Assets {
     lateinit var potion: Texture
         private set
 
+    lateinit var wallInside: Texture
+    lateinit var wallTop: Texture
+    lateinit var wallBottom: Texture
+    lateinit var wallLeft: Texture
+    lateinit var wallRight: Texture
+
+    lateinit var wallTopLeft: Texture
+    lateinit var wallTopRight: Texture
+    lateinit var wallBottomLeft: Texture
+    lateinit var wallBottomRight: Texture
+
 
     fun load() {
 
@@ -56,6 +68,21 @@ object Assets {
         door = Texture("thesis/Tiles/tile_0021.png")
         barrel = Texture("thesis/Tiles/tile_0082.png")
         potion = Texture("thesis/Tiles/tile_0127.png")
+
+
+        //tall textures
+        wallInside = Texture("thesis/Tiles/tile_0000.png")
+        wallTop = Texture("thesis/Tiles/tile_0026.png")
+        wallBottom = Texture("thesis/Tiles/tile_0002.png")
+        wallLeft = Texture("thesis/Tiles/tile_0013.png")
+        wallRight = Texture("thesis/Tiles/tile_0015.png")
+
+        wallTopLeft = Texture("thesis/Tiles/tile_0005.png")
+        wallTopRight = Texture("thesis/Tiles/tile_0004.png")
+        wallBottomLeft = Texture("thesis/Tiles/tile_0017.png")
+        wallBottomRight = Texture("thesis/Tiles/tile_0016.png")
+
+
 
         swordRegion = TextureRegion(sword)
 
@@ -98,6 +125,41 @@ object Assets {
 
     }
 
+    fun getWallTexture(
+        variant: WallVariant
+    ): Texture {
+
+        return when(variant){
+
+            WallVariant.INSIDE ->
+                wallInside
+
+            WallVariant.TOP ->
+                wallTop
+
+            WallVariant.BOTTOM ->
+                wallBottom
+
+            WallVariant.LEFT ->
+                wallLeft
+
+            WallVariant.RIGHT ->
+                wallRight
+
+            WallVariant.TOP_LEFT ->
+                wallTopLeft
+
+            WallVariant.TOP_RIGHT ->
+                wallTopRight
+
+            WallVariant.BOTTOM_LEFT ->
+                wallBottomLeft
+
+            WallVariant.BOTTOM_RIGHT ->
+                wallBottomRight
+        }
+    }
+
 
     fun dispose() {
 
@@ -108,5 +170,6 @@ object Assets {
         floor.dispose()
         wall.dispose()
         uiBackground.dispose()
+
     }
 }

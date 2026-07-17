@@ -11,6 +11,14 @@ class TileMap(
         }
     }
 
+
+    val wallVariants = Array(height){
+        Array(width){
+            WallVariant.INSIDE
+        }
+    }
+
+
     operator fun get(x: Int, y: Int): TileType {
         return tiles[y][x]
     }
@@ -19,4 +27,20 @@ class TileMap(
         tiles[y][x] = value
     }
 
+
+    fun setWallVariant(
+        x:Int,
+        y:Int,
+        variant:WallVariant
+    ){
+        wallVariants[y][x] = variant
+    }
+
+
+    fun getWallVariant(
+        x:Int,
+        y:Int
+    ):WallVariant {
+        return wallVariants[y][x]
+    }
 }
