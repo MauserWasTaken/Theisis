@@ -7,23 +7,28 @@ class TileMap(
 
     val tiles = Array(height) {
         Array(width) {
-            TileType.WALL
+            TileType.FLOOR
         }
     }
 
 
-    val wallVariants = Array(height){
+    val wallTextures = Array(height){
         Array(width){
-            WallVariant.INSIDE
+            WallTile.NONE
         }
     }
 
 
-    operator fun get(x: Int, y: Int): TileType {
+    operator fun get(x:Int,y:Int):TileType {
         return tiles[y][x]
     }
 
-    operator fun set(x: Int, y: Int, value: TileType) {
+
+    operator fun set(
+        x:Int,
+        y:Int,
+        value:TileType
+    ){
         tiles[y][x] = value
     }
 
@@ -31,16 +36,16 @@ class TileMap(
     fun setWallVariant(
         x:Int,
         y:Int,
-        variant:WallVariant
+        variant:WallTile
     ){
-        wallVariants[y][x] = variant
+        wallTextures[y][x] = variant
     }
 
 
-    fun getWallVariant(
+    fun getWallTexture(
         x:Int,
         y:Int
-    ):WallVariant {
-        return wallVariants[y][x]
+    ):WallTile{
+        return wallTextures[y][x]
     }
 }

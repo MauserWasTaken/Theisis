@@ -2,7 +2,7 @@ package com.example.thesis.generator
 
 import com.example.thesis.world.TileMap
 import com.example.thesis.world.TileType
-import com.example.thesis.world.WallVariant
+import com.example.thesis.world.WallTile
 
 
 class WallVariantGenerator {
@@ -41,7 +41,7 @@ class WallVariantGenerator {
         x:Int,
         y:Int,
         map:TileMap
-    ):WallVariant {
+    ):WallTile {
 
 
         val up = isFloor(x,y-1,map)
@@ -55,42 +55,42 @@ class WallVariantGenerator {
 
             // corners
             down && right ->
-                WallVariant.TOP_LEFT
+                WallTile.TOP_LEFT
 
 
             down && left ->
-                WallVariant.TOP_RIGHT
+                WallTile.TOP_RIGHT
 
 
             up && right ->
-                WallVariant.BOTTOM_LEFT
+                WallTile.BOTTOM_LEFT
 
 
             up && left ->
-                WallVariant.BOTTOM_RIGHT
+                WallTile.BOTTOM_RIGHT
 
 
 
             // edges
             down ->
-                WallVariant.TOP
+                WallTile.TOP
 
 
             up ->
-                WallVariant.BOTTOM
+                WallTile.BOTTOM
 
 
             right ->
-                WallVariant.LEFT
+                WallTile.LEFT
 
 
             left ->
-                WallVariant.RIGHT
+                WallTile.RIGHT
 
 
 
             else ->
-                WallVariant.INSIDE
+                WallTile.INSIDE
         }
     }
 

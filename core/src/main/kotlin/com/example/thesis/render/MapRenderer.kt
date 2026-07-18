@@ -50,25 +50,23 @@ class MapRenderer {
 
                 when(data[x,y]) {
 
-
                     TileType.WALL -> {
 
+                        val wallVariant =
+                            data.getWallTexture(x,y)
 
-                        val variant =
-                            data.getWallVariant(x,y)
 
-
-                        val wallTile =
-                            StaticTiledMapTile(
-                                TextureRegion(
-                                    Assets.getWallTexture(
-                                        variant
-                                    )
-                                )
+                        val wallTexture =
+                            Assets.getWallTexture(
+                                wallVariant
                             )
 
 
-                        cell.setTile(wallTile)
+                        cell.setTile(
+                            StaticTiledMapTile(
+                                TextureRegion(wallTexture)
+                            )
+                        )
 
                     }
 

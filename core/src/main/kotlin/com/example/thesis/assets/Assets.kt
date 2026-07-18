@@ -3,7 +3,7 @@ package com.example.thesis.assets
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.example.thesis.world.WallVariant
+import com.example.thesis.world.WallTile
 
 object Assets {
 
@@ -55,6 +55,9 @@ object Assets {
     lateinit var wallBottomLeft: Texture
     lateinit var wallBottomRight: Texture
 
+    lateinit var wallBrickLeft: Texture
+    lateinit var wallBrickRight: Texture
+
 
     fun load() {
 
@@ -81,6 +84,12 @@ object Assets {
         wallTopRight = Texture("thesis/Tiles/tile_0004.png")
         wallBottomLeft = Texture("thesis/Tiles/tile_0017.png")
         wallBottomRight = Texture("thesis/Tiles/tile_0016.png")
+
+        wallBrickLeft =
+            Texture("thesis/Tiles/tile_0057.png")
+
+        wallBrickRight =
+            Texture("thesis/Tiles/tile_0059.png")
 
 
 
@@ -126,37 +135,49 @@ object Assets {
     }
 
     fun getWallTexture(
-        variant: WallVariant
+        variant: WallTile
     ): Texture {
 
         return when(variant){
 
-            WallVariant.INSIDE ->
+            WallTile.INSIDE ->
                 wallInside
 
-            WallVariant.TOP ->
+            WallTile.TOP ->
                 wallTop
 
-            WallVariant.BOTTOM ->
+            WallTile.BOTTOM ->
                 wallBottom
 
-            WallVariant.LEFT ->
+            WallTile.LEFT ->
                 wallLeft
 
-            WallVariant.RIGHT ->
+            WallTile.RIGHT ->
                 wallRight
 
-            WallVariant.TOP_LEFT ->
+            WallTile.TOP_LEFT ->
                 wallTopLeft
 
-            WallVariant.TOP_RIGHT ->
+            WallTile.TOP_RIGHT ->
                 wallTopRight
 
-            WallVariant.BOTTOM_LEFT ->
+            WallTile.BOTTOM_LEFT ->
                 wallBottomLeft
 
-            WallVariant.BOTTOM_RIGHT ->
+            WallTile.BOTTOM_RIGHT ->
                 wallBottomRight
+
+            WallTile.BRICK ->
+                wall
+
+            WallTile.NONE ->
+                wallInside
+
+            WallTile.BRICK_LEFT ->
+                wallBrickLeft
+
+            WallTile.BRICK_RIGHT ->
+                wallBrickRight
         }
     }
 

@@ -51,7 +51,7 @@ class Player(
             return false
         }
 
-        hp -= amount
+        //hp -= amount
         invincibleTimer = 2f
 
         return true
