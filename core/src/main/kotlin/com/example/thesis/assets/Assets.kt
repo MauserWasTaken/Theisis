@@ -58,6 +58,11 @@ object Assets {
     lateinit var wallBrickLeft: Texture
     lateinit var wallBrickRight: Texture
 
+    lateinit var borderTopLeft: Texture
+    lateinit var borderTopRight: Texture
+    lateinit var borderBottomLeft: Texture
+    lateinit var borderBottomRight: Texture
+
 
     fun load() {
 
@@ -90,6 +95,18 @@ object Assets {
 
         wallBrickRight =
             Texture("thesis/Tiles/tile_0059.png")
+
+        borderTopLeft =
+            Texture("thesis/Tiles/tile_0001.png")
+
+        borderTopRight =
+            Texture("thesis/Tiles/tile_0003.png")
+
+        borderBottomLeft =
+            Texture("thesis/Tiles/tile_0025.png")
+
+        borderBottomRight =
+            Texture("thesis/Tiles/tile_0027.png")
 
 
 
@@ -178,6 +195,18 @@ object Assets {
 
             WallTile.BRICK_RIGHT ->
                 wallBrickRight
+
+            WallTile.BORDER_TOP_LEFT ->
+                borderTopLeft
+
+            WallTile.BORDER_TOP_RIGHT ->
+                borderTopRight
+
+            WallTile.BORDER_BOTTOM_LEFT ->
+                borderBottomLeft
+
+            WallTile.BORDER_BOTTOM_RIGHT ->
+                borderBottomRight
         }
     }
 

@@ -20,5 +20,11 @@ enum class WallTile {
     BOTTOM_RIGHT,
 
     LEFT,
-    RIGHT
+    RIGHT,
+
+    // NEW
+    BORDER_TOP_LEFT,
+    BORDER_TOP_RIGHT,
+    BORDER_BOTTOM_LEFT,
+    BORDER_BOTTOM_RIGHT
 }
