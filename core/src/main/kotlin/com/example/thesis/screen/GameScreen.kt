@@ -14,6 +14,7 @@ import com.example.thesis.world.GameWorld
 import com.example.thesis.assets.Assets
 import com.example.thesis.system.CombatSystem
 import com.badlogic.gdx.Gdx
+import com.example.thesis.input.DebugController
 import com.example.thesis.ui.UiRenderer
 import com.example.thesis.world.LevelManager
 
@@ -43,11 +44,14 @@ class GameScreen : Screen {
     private val input = PlayerInput()
     private var moveTimer = 0f
     private val moveDelay = 0.15f
+    private val debugController = DebugController()
 
     // RENDERING
     private val renderer = MapRenderer()
     private val batch = SpriteBatch()
     private val uiRenderer = UiRenderer(batch)
+
+
 
     override fun show() {
 
@@ -59,10 +63,15 @@ class GameScreen : Screen {
 
         world = GameWorld(level)
 
-        renderer.build(level.map)
+        renderer.build(
+            level.map,
+            level.debugMap
+        )
     }
 
     override fun render(delta: Float) {
+
+        debugController.update()
 
         ScreenUtils.clear(0.1f, 0.1f, 0.1f, 1f)
 
@@ -78,6 +87,14 @@ class GameScreen : Screen {
         doorCooldown -= delta
 
 
+        ScreenUtils.clear(
+            0.1f,
+            0.1f,
+            0.1f,
+            1f
+        )
+
+
         val door = world.getPlayerDoor()
 
         if(door != null && doorCooldown <= 0f) {
@@ -88,13 +105,15 @@ class GameScreen : Screen {
                     door
                 )
 
-            renderer.build(world.map)
+            renderer.build(
+                world.map,
+                world.debugMap
+            )
 
             doorCooldown = 0.5f
 
             return
         }
-
         world.updateEnemies(delta)
 
         combatSystem.update(world)
@@ -106,6 +125,13 @@ class GameScreen : Screen {
 
         // MAP
         renderer.render(camera)
+
+
+        if(debugController.debugEnabled){
+
+            renderer.renderDebug(camera)
+
+        }
 
         // ENTITIES
         batch.projectionMatrix = camera.combined

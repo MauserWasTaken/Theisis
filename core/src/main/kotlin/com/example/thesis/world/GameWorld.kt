@@ -18,6 +18,8 @@ class GameWorld(
 
     val map: TileMap = level.map
 
+    val debugMap: DebugMap = level.debugMap
+
     val player = Player(
         level.playerSpawn.first,
         level.playerSpawn.second

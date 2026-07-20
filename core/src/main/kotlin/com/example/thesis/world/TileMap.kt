@@ -48,4 +48,37 @@ class TileMap(
     ):WallTile{
         return wallTextures[y][x]
     }
+
+    fun isInside(x:Int, y:Int):Boolean {
+        return x >= 0 &&
+            y >= 0 &&
+            x < width &&
+            y < height
+    }
+
+
+
+    fun getNeighbour(
+        x:Int,
+        y:Int,
+        dx:Int,
+        dy:Int
+    ):TileType? {
+
+        val nx = x + dx
+        val ny = y + dy
+
+        if(!isInside(nx,ny))
+            return null
+
+        return this[nx,ny]
+    }
+
+    fun isWall(x: Int, y: Int): Boolean {
+        return isInside(x, y) && this[x, y] == TileType.WALL
+    }
+
+    fun isFloor(x: Int, y: Int): Boolean {
+        return isInside(x, y) && this[x, y] == TileType.FLOOR
+    }
 }

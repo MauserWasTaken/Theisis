@@ -4,28 +4,86 @@ import com.example.thesis.data.DoorData
 import com.example.thesis.data.LevelData
 import com.example.thesis.data.SavedBarrel
 import com.example.thesis.data.SavedEnemy
+import com.example.thesis.world.DebugMap
+import com.example.thesis.world.DebugType
 import com.example.thesis.world.TileMap
 import com.example.thesis.world.TileType
 import kotlin.random.Random
 
 class RandomGenerator {
 
-
     fun generate(
-        width:Int,
-        height:Int
-    ):LevelData {
+        width: Int,
+        height: Int
+    ): LevelData {
 
+        val map = TileMap(width, height)
 
-        val map =
-            TileMap(
+        val debugMap =
+            DebugMap(
                 width,
                 height
             )
 
+        generateWalls(map, debugMap)
 
-        val wallBuilder =
-            WallBuilder()
+        val floorTiles = collectFloorTiles(map)
+
+        val doors = generateDoors(map)
+
+        placeDoors(map, doors)
+        for(door in doors){
+
+            debugMap.set(
+                door.x,
+                door.y,
+                DebugType.DOOR
+            )
+
+        }
+
+        floorTiles.removeAll(
+            doors.map { it.x to it.y }
+        )
+
+        floorTiles.shuffle()
+
+        val playerSpawn = floorTiles.first()
+        debugMap.set(
+            playerSpawn.first,
+            playerSpawn.second,
+            DebugType.PLAYER
+        )
+
+        val enemies = spawnEnemies(floorTiles)
+        for(enemy in enemies){
+
+            debugMap.set(
+                enemy.x,
+                enemy.y,
+                DebugType.ENEMY
+            )
+        }
+
+        val barrels = spawnBarrels(floorTiles)
+
+        return LevelData(
+            map = map,
+            playerSpawn = playerSpawn,
+            enemies = enemies,
+            barrels = barrels,
+            potions = mutableListOf(),
+            doors = doors,
+            debugMap =debugMap
+        )
+    }
+
+    private fun generateWalls(
+        map: TileMap,
+        debugMap: DebugMap
+    )
+    {
+        val wallBuilder = WallBuilder()
 
         wallBuilder.createBorderWall(
             map,
@@ -34,18 +92,10 @@ class RandomGenerator {
 
         val wallSize = 4
 
+        for(y in 2 until map.height-wallSize step wallSize){
+            for(x in 2 until map.width-wallSize step wallSize){
 
-        for(y in 2 until height-wallSize step wallSize){
-
-            for(x in 2 until width-wallSize step wallSize){
-
-
-                val makeWall =
-                    Random.nextFloat() < 0.35f
-
-
-
-                if(makeWall){
+                if(Random.nextFloat() < 0.35f){
 
                     wallBuilder.createWall(
                         map,
@@ -54,154 +104,93 @@ class RandomGenerator {
                         wallSize,
                         wallSize
                     )
+                    for(yy in y until y + wallSize){
+                        for(xx in x until x + wallSize){
 
+                            debugMap.set(
+                                x,
+                                y,
+                                DebugType.WALL
+                            )
+
+                        }
+                    }
                 }
-
             }
-
         }
+    }
 
-
-
-
-        /*
-            Find walkable tiles
-        */
+    private fun collectFloorTiles(
+        map: TileMap
+    ): MutableList<Pair<Int, Int>> {
 
         val floorTiles =
-            mutableListOf<Pair<Int,Int>>()
+            mutableListOf<Pair<Int, Int>>()
 
+        for (y in 0 until map.height) {
+            for (x in 0 until map.width) {
 
-
-        for(y in 0 until height){
-
-            for(x in 0 until width){
-
-
-                if(map[x,y] == TileType.FLOOR){
-
-                    floorTiles.add(
-                        x to y
-                    )
-
+                if (map[x, y] == TileType.FLOOR) {
+                    floorTiles.add(x to y)
                 }
-
             }
         }
 
-
-
-
-
-        /*
-            Generate doors
-        */
-
-        val doors =
-            generateDoors(
-                width,
-                height,
-                map
-            )
-
-
-
-        for(door in doors){
-
-            map[
-                door.x,
-                door.y
-            ] =
-                TileType.DOOR
-
-        }
-
-
-
-        floorTiles.removeAll(
-            doors.map {
-                it.x to it.y
-            }
-        )
-
-
-
-
-
-        /*
-            Spawn entities
-        */
-
-        floorTiles.shuffle()
-
-
-
-        val playerSpawn =
-            floorTiles.first()
-
-
-
-        val enemies =
-            floorTiles
-                .drop(1)
-                .take(5)
-                .map {
-
-                    SavedEnemy(
-                        x = it.first,
-                        y = it.second,
-                        hp = 1
-                    )
-
-                }
-                .toMutableList()
-
-
-
-        val barrels =
-            floorTiles
-                .drop(6)
-                .take(10)
-                .map {
-
-                    SavedBarrel(
-                        x = it.first,
-                        y = it.second
-                    )
-
-                }
-                .toMutableList()
-
-
-
-        return LevelData(
-
-            map = map,
-
-            playerSpawn = playerSpawn,
-
-            enemies = enemies,
-
-            barrels = barrels,
-
-            potions = mutableListOf(),
-
-            doors = doors
-
-        )
-
+        return floorTiles
     }
-}
 
+    private fun placeDoors(
+        map: TileMap,
+        doors: List<DoorData>
+    ) {
+        for (door in doors) {
+            map[door.x, door.y] = TileType.DOOR
+        }
+    }
 
+    private fun spawnEnemies(
+        floorTiles: List<Pair<Int, Int>>
+    ): MutableList<SavedEnemy> {
 
+        return floorTiles
+            .drop(1)
+            .take(5)
+            .map {
 
+                SavedEnemy(
+                    x = it.first,
+                    y = it.second,
+                    hp = 1
+                )
 
-private fun generateDoors(
-    width:Int,
-    height:Int,
-    map:TileMap
-):MutableList<DoorData>{
+            }
+            .toMutableList()
+    }
+
+    private fun spawnBarrels(
+        floorTiles: List<Pair<Int, Int>>
+    ): MutableList<SavedBarrel> {
+
+        return floorTiles
+            .drop(6)
+            .take(10)
+            .map {
+
+                SavedBarrel(
+                    x = it.first,
+                    y = it.second
+                )
+
+            }
+            .toMutableList()
+    }
+
+    private fun generateDoors(
+        map: TileMap
+    ): MutableList<DoorData> {
+
+        val width = map.width
+        val height = map.height
 
 
     val possible =
@@ -285,6 +274,7 @@ private fun generateDoors(
 
         }
         .toMutableList()
+}
 }
 
 

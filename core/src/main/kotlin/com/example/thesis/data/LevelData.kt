@@ -1,5 +1,6 @@
 package com.example.thesis.data
 
+import com.example.thesis.world.DebugMap
 import com.example.thesis.world.TileMap
 
 data class LevelData(
@@ -14,5 +15,7 @@ data class LevelData(
 
     var potions: MutableList<SavedPotion>,
 
-    val doors: MutableList<DoorData>
+    val doors: MutableList<DoorData>,
+
+    val debugMap: DebugMap
 )

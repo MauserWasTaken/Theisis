@@ -8,14 +8,23 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.example.thesis.world.TileMap
 import com.example.thesis.world.TileType
-
 import com.example.thesis.assets.Assets
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.example.thesis.world.DebugMap
+import com.example.thesis.debug.DebugConfig
+import com.example.thesis.world.DebugType
 
 
 class MapRenderer {
 
     private lateinit var map: TiledMap
     private lateinit var renderer: OrthogonalTiledMapRenderer
+
+    private val debugFont =
+        BitmapFont()
+
+    private lateinit var debugMap: DebugMap
 
     private val floorTile =
         StaticTiledMapTile(TextureRegion(Assets.floor))
@@ -27,7 +36,14 @@ class MapRenderer {
         StaticTiledMapTile(TextureRegion(Assets.door))
 
 
-    fun build(data: TileMap) {
+    fun build(
+        data: TileMap,
+        debug: DebugMap
+    )
+    {
+
+        debugMap = debug
+
 
         map = TiledMap()
 
@@ -111,6 +127,75 @@ class MapRenderer {
 
         renderer =
             OrthogonalTiledMapRenderer(map)
+    }
+
+    fun renderDebug(
+        camera: OrthographicCamera
+    ){
+
+        if(!DebugConfig.enabled)
+            return
+
+
+        val batch =
+            renderer.batch
+
+
+        batch.begin()
+
+
+        for(y in 0 until debugMap.height){
+
+            for(x in 0 until debugMap.width){
+
+                val debug =
+                    debugMap.get(x,y)
+
+
+                val text =
+                    when(debug){
+
+                        DebugType.WALL ->
+                            "W"
+
+                        DebugType.ROOM ->
+                            "R"
+
+                        DebugType.PATH ->
+                            "."
+
+                        DebugType.PLAYER ->
+                            "P"
+
+                        DebugType.ENEMY ->
+                            "E"
+
+                        DebugType.BARREL ->
+                            "B"
+
+                        DebugType.DOOR ->
+                            "D"
+
+                        DebugType.NONE ->
+                            ""
+                    }
+
+
+                if(text.isNotEmpty()){
+
+                    debugFont.draw(
+                        batch,
+                        text,
+                        x * 16f,
+                        y * 16f
+                    )
+
+                }
+            }
+        }
+
+
+        batch.end()
     }
 
 
