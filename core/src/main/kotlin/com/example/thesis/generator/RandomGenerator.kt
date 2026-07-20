@@ -20,6 +20,8 @@ class RandomGenerator {
 
         val random = Random(seed)
 
+        val validator = MapValidator()
+
         val map = TileMap(width, height)
 
         val debugMap =
@@ -36,11 +38,12 @@ class RandomGenerator {
 
         val floorTiles = collectFloorTiles(map)
 
+        validator.validateFloorExists(floorTiles)
+
         val doors = generateDoors(
             map,
             random
         )
-
         placeDoors(map, doors)
         for(door in doors){
 
@@ -51,6 +54,12 @@ class RandomGenerator {
             )
 
         }
+        validator.validateDoors(
+            map,
+            doors.map {
+                it.x to it.y
+            }
+        )
 
         floorTiles.removeAll(
             doors.map { it.x to it.y }
@@ -59,6 +68,11 @@ class RandomGenerator {
         floorTiles.shuffle(random)
 
         val playerSpawn = floorTiles.first()
+
+        validator.validatePositionIsWalkable(
+            map,
+            playerSpawn
+        )
         debugMap.set(
             playerSpawn.first,
             playerSpawn.second,
@@ -66,6 +80,13 @@ class RandomGenerator {
         )
 
         val enemies = spawnEnemies(floorTiles)
+
+        validator.validateEnemies(
+            map,
+            enemies.map {
+                it.x to it.y
+            }
+        )
         for(enemy in enemies){
 
             debugMap.set(
@@ -161,11 +182,10 @@ class RandomGenerator {
     }
 
     private fun spawnEnemies(
-        floorTiles: List<Pair<Int, Int>>
-    ): MutableList<SavedEnemy> {
+        floorTiles: List<Pair<Int,Int>>
+    ): MutableList<SavedEnemy>{
 
         return floorTiles
-            .drop(1)
             .take(5)
             .map {
 

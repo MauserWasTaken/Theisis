@@ -7,7 +7,8 @@ import kotlin.random.Random
 
 
 class LevelManager {
-    val seed = Random.nextInt()
+
+    private val gameSeed = Random.nextInt()
 
     private val levels = mutableMapOf<Int, LevelData>()
 
@@ -18,16 +19,17 @@ class LevelManager {
 
         return levels.getOrPut(number) {
 
+            val levelSeed =
+                gameSeed xor number
+
+
             RandomGenerator().generate(
                 50,
                 40,
-                //seed = seed
-                seed = 12345
+                levelSeed
             )
-
         }
     }
-
 
     fun enterDoor(door:DoorData):LevelData {
 
