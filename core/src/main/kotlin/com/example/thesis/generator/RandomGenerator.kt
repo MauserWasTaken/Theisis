@@ -14,8 +14,11 @@ class RandomGenerator {
 
     fun generate(
         width: Int,
-        height: Int
+        height: Int,
+        seed: Int
     ): LevelData {
+
+        val random = Random(seed)
 
         val map = TileMap(width, height)
 
@@ -25,11 +28,18 @@ class RandomGenerator {
                 height
             )
 
-        generateWalls(map, debugMap)
+        generateWalls(
+            map,
+            debugMap,
+            random
+        )
 
         val floorTiles = collectFloorTiles(map)
 
-        val doors = generateDoors(map)
+        val doors = generateDoors(
+            map,
+            random
+        )
 
         placeDoors(map, doors)
         for(door in doors){
@@ -46,7 +56,7 @@ class RandomGenerator {
             doors.map { it.x to it.y }
         )
 
-        floorTiles.shuffle()
+        floorTiles.shuffle(random)
 
         val playerSpawn = floorTiles.first()
         debugMap.set(
@@ -74,13 +84,15 @@ class RandomGenerator {
             barrels = barrels,
             potions = mutableListOf(),
             doors = doors,
-            debugMap =debugMap
+            debugMap = debugMap,
+            seed = seed
         )
     }
 
     private fun generateWalls(
         map: TileMap,
-        debugMap: DebugMap
+        debugMap: DebugMap,
+        random: Random
     )
     {
         val wallBuilder = WallBuilder()
@@ -95,7 +107,7 @@ class RandomGenerator {
         for(y in 2 until map.height-wallSize step wallSize){
             for(x in 2 until map.width-wallSize step wallSize){
 
-                if(Random.nextFloat() < 0.35f){
+                if(random.nextFloat() < 0.35f){
 
                     wallBuilder.createWall(
                         map,
@@ -108,8 +120,8 @@ class RandomGenerator {
                         for(xx in x until x + wallSize){
 
                             debugMap.set(
-                                x,
-                                y,
+                                xx,
+                                yy,
                                 DebugType.WALL
                             )
 
@@ -186,7 +198,8 @@ class RandomGenerator {
     }
 
     private fun generateDoors(
-        map: TileMap
+        map: TileMap,
+        random: Random
     ): MutableList<DoorData> {
 
         val width = map.width
@@ -255,12 +268,7 @@ class RandomGenerator {
 
         }
     }
-
-
-
-    possible.shuffle()
-
-
+        possible.shuffle(random)
 
     return possible
         .take(2)

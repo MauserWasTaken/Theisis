@@ -3,11 +3,11 @@ package com.example.thesis.world
 import com.example.thesis.data.DoorData
 import com.example.thesis.data.LevelData
 import com.example.thesis.generator.RandomGenerator
+import kotlin.random.Random
 
 
 class LevelManager {
-
-    private val generator = RandomGenerator()
+    val seed = Random.nextInt()
 
     private val levels = mutableMapOf<Int, LevelData>()
 
@@ -18,9 +18,11 @@ class LevelManager {
 
         return levels.getOrPut(number) {
 
-            generator.generate(
+            RandomGenerator().generate(
                 50,
-                40
+                40,
+                //seed = seed
+                seed = 12345
             )
 
         }

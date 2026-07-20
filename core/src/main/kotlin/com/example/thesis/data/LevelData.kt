@@ -17,5 +17,7 @@ data class LevelData(
 
     val doors: MutableList<DoorData>,
 
-    val debugMap: DebugMap
+    val debugMap: DebugMap,
+
+    val seed: Int
 )
