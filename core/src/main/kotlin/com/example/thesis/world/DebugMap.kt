@@ -15,7 +15,31 @@ class DebugMap(
         Array(width) {
             -1
         }
+    }
+
+    val pathIds =
+        Array(height){
+            Array(width){
+                -1
+            }
         }
+
+
+    val regionIds =
+        Array(height){
+            Array(width){
+                -1
+            }
+        }
+
+
+    val floodValues =
+        Array(height){
+            Array(width){
+                -1
+            }
+        }
+
 
     fun set(
         x:Int,
@@ -72,8 +96,7 @@ class DebugMap(
             DebugType.ROOM
         )
 
-        // optional later:
-        // store room id separately
+        roomIds[y][x] = id
     }
 
 

@@ -1,6 +1,8 @@
 package com.example.thesis.generator
 
 import com.example.thesis.data.DoorData
+import com.example.thesis.data.DoorDirection
+import com.example.thesis.data.GenerationInfo
 import com.example.thesis.data.LevelData
 import com.example.thesis.data.SavedBarrel
 import com.example.thesis.data.SavedEnemy
@@ -98,7 +100,12 @@ class RandomGenerator {
             potions = mutableListOf(),
             doors = doors,
             debugMap = context.debugMap,
-            seed = seed
+            seed = seed,
+            generationInfo = GenerationInfo(
+                algorithm = "Random",
+                width = context.map.width,
+                height = context.map.height
+            )
         )
     }
 
@@ -224,8 +231,8 @@ class RandomGenerator {
         val height = context.map.height
 
 
-    val possible =
-        mutableListOf<Pair<Int,Int>>()
+        val possible =
+            mutableListOf<Triple<Int,Int,DoorDirection>>()
 
 
 
@@ -239,7 +246,11 @@ class RandomGenerator {
         if(context.map[x,borderThickness] == TileType.FLOOR){
 
             possible.add(
-                x to borderThickness-1
+                Triple(
+                    x,
+                    borderThickness-1,
+                    DoorDirection.NORTH
+                )
             )
 
         }
@@ -253,7 +264,11 @@ class RandomGenerator {
         if(context.map[x,height-borderThickness-1] == TileType.FLOOR){
 
             possible.add(
-                x to height-borderThickness
+                Triple(
+                    x,
+                    height-borderThickness,
+                    DoorDirection.SOUTH
+                )
             )
 
         }
@@ -267,7 +282,11 @@ class RandomGenerator {
         if(context.map[borderThickness,y] == TileType.FLOOR){
 
             possible.add(
-                borderThickness-1 to y
+                Triple(
+                    borderThickness-1,
+                    y,
+                    DoorDirection.WEST
+                )
             )
 
         }
@@ -281,7 +300,11 @@ class RandomGenerator {
         if(context.map[width-borderThickness-1,y] == TileType.FLOOR){
 
             possible.add(
-                width-borderThickness to y
+                Triple(
+                    width-borderThickness,
+                    y,
+                    DoorDirection.EAST
+                )
             )
 
         }
@@ -295,7 +318,8 @@ class RandomGenerator {
             DoorData(
                 id = index,
                 x = pos.first,
-                y = pos.second
+                y = pos.second,
+                direction = pos.third
             )
 
         }

@@ -5,6 +5,16 @@ data class DoorData(
     val x: Int,
     val y: Int,
 
+    val direction:DoorDirection,
+
     var connectedLevel: Int = -1,
     var connectedDoor: Int = -1
 )
+
+
+enum class DoorDirection {
+    NORTH,
+    SOUTH,
+    EAST,
+    WEST
+}

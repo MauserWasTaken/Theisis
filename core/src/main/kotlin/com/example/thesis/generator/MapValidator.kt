@@ -24,7 +24,8 @@ class MapValidator {
     ){
 
         require(
-            map[position.first, position.second] == TileType.FLOOR
+            map[position.first,position.second] == TileType.FLOOR ||
+                map[position.first,position.second] == TileType.DOOR
         ){
             "Spawn position is not walkable: $position"
         }
@@ -89,5 +90,13 @@ class MapValidator {
                 "Door has no connection to floor: $door"
             }
         }
+    }
+
+    fun validateConnected(
+        map:TileMap,
+        start:Pair<Int,Int>
+    )
+    {
+
     }
 }

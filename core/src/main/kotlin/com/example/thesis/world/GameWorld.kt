@@ -98,8 +98,7 @@ class GameWorld(
         }
 
 
-        return map[x,y] == TileType.FLOOR ||
-            map[x,y] == TileType.DOOR
+        return isWalkable(map[x,y])
     }
 
     fun getWalkableNeighbors(x: Int, y: Int): List<Pair<Int, Int>> {
@@ -134,6 +133,20 @@ class GameWorld(
             it.x == player.x &&
                 it.y == player.y
 
+        }
+    }
+
+    private fun isWalkable(
+        tile:TileType
+    ):Boolean{
+
+        return when(tile){
+
+            TileType.FLOOR,
+            TileType.DOOR,
+            TileType.EXIT -> true
+
+            else -> false
         }
     }
 

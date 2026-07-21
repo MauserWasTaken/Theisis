@@ -19,5 +19,7 @@ data class LevelData(
 
     val debugMap: DebugMap,
 
-    val seed: Int
+    val seed: Int,
+
+    val generationInfo: GenerationInfo
 )
