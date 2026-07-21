@@ -13,139 +13,130 @@ import kotlin.random.Random
 class RandomGenerator {
 
     fun generate(
-        width: Int,
-        height: Int,
+        settings: GenerationSettings,
         seed: Int
-    ): LevelData {
+    ): LevelData{
 
-        val random = Random(seed)
+        val context = GenerationContext(
+            map = TileMap(
+                settings.width,
+                settings.height
+            ),
+
+            debugMap = DebugMap(
+                settings.width,
+                settings.height
+            ),
+
+            random = Random(seed)
+        )
 
         val validator = MapValidator()
 
-        val map = TileMap(width, height)
-
-        val debugMap =
-            DebugMap(
-                width,
-                height
-            )
-
         generateWalls(
-            map,
-            debugMap,
-            random
+            context,
+            settings
         )
 
-        val floorTiles = collectFloorTiles(map)
+        val floorTiles =
+            collectFloorTiles(context)
 
         validator.validateFloorExists(floorTiles)
 
-        val doors = generateDoors(
-            map,
-            random
+        val doors =
+            generateDoors(context)
+
+        placeDoors(
+            context,
+            doors
         )
-        placeDoors(map, doors)
-        for(door in doors){
-
-            debugMap.set(
-                door.x,
-                door.y,
-                DebugType.DOOR
-            )
-
-        }
         validator.validateDoors(
-            map,
-            doors.map {
-                it.x to it.y
-            }
+            context.map,
+            doors.map { it.x to it.y }
         )
 
         floorTiles.removeAll(
             doors.map { it.x to it.y }
         )
 
-        floorTiles.shuffle(random)
+        floorTiles.shuffle(context.random)
 
         val playerSpawn = floorTiles.first()
 
         validator.validatePositionIsWalkable(
-            map,
+            context.map,
             playerSpawn
         )
-        debugMap.set(
+        context.debugMap.player(
             playerSpawn.first,
-            playerSpawn.second,
-            DebugType.PLAYER
+            playerSpawn.second
         )
 
         val enemies = spawnEnemies(floorTiles)
 
         validator.validateEnemies(
-            map,
+            context.map,
             enemies.map {
                 it.x to it.y
             }
         )
         for(enemy in enemies){
 
-            debugMap.set(
+            context.debugMap.enemy(
                 enemy.x,
-                enemy.y,
-                DebugType.ENEMY
+                enemy.y
             )
         }
 
         val barrels = spawnBarrels(floorTiles)
 
         return LevelData(
-            map = map,
+            map = context.map,
             playerSpawn = playerSpawn,
             enemies = enemies,
             barrels = barrels,
             potions = mutableListOf(),
             doors = doors,
-            debugMap = debugMap,
+            debugMap = context.debugMap,
             seed = seed
         )
     }
 
     private fun generateWalls(
-        map: TileMap,
-        debugMap: DebugMap,
-        random: Random
-    )
-    {
+        context: GenerationContext,
+        settings: GenerationSettings
+    ) {
+
         val wallBuilder = WallBuilder()
 
         wallBuilder.createBorderWall(
-            map,
-            thickness = 2
+            context.map,
+            thickness = settings.borderThickness
         )
 
-        val wallSize = 4
+        val wallSize = settings.wallSize
 
-        for(y in 2 until map.height-wallSize step wallSize){
-            for(x in 2 until map.width-wallSize step wallSize){
+        for (y in 2 until context.map.height - wallSize step wallSize) {
+            for (x in 2 until context.map.width - wallSize step wallSize) {
 
-                if(random.nextFloat() < 0.35f){
+                if (context.random.nextFloat() < settings.wallChance)
+                {
 
                     wallBuilder.createWall(
-                        map,
+                        context.map,
                         x,
                         y,
                         wallSize,
                         wallSize
                     )
-                    for(yy in y until y + wallSize){
-                        for(xx in x until x + wallSize){
 
-                            debugMap.set(
+                    for (yy in y until y + wallSize) {
+                        for (xx in x until x + wallSize) {
+
+                            context.debugMap.wall(
                                 xx,
-                                yy,
-                                DebugType.WALL
+                                yy
                             )
-
                         }
                     }
                 }
@@ -154,16 +145,16 @@ class RandomGenerator {
     }
 
     private fun collectFloorTiles(
-        map: TileMap
-    ): MutableList<Pair<Int, Int>> {
+        context: GenerationContext
+    ): MutableList<Pair<Int,Int>> {
 
         val floorTiles =
-            mutableListOf<Pair<Int, Int>>()
+            mutableListOf<Pair<Int,Int>>()
 
-        for (y in 0 until map.height) {
-            for (x in 0 until map.width) {
+        for (y in 0 until context.map.height) {
+            for (x in 0 until context.map.width) {
 
-                if (map[x, y] == TileType.FLOOR) {
+                if (context.map[x,y] == TileType.FLOOR) {
                     floorTiles.add(x to y)
                 }
             }
@@ -173,11 +164,19 @@ class RandomGenerator {
     }
 
     private fun placeDoors(
-        map: TileMap,
+        context: GenerationContext,
         doors: List<DoorData>
     ) {
+
         for (door in doors) {
-            map[door.x, door.y] = TileType.DOOR
+
+            context.map[door.x, door.y] =
+                TileType.DOOR
+
+            context.debugMap.door(
+                door.x,
+                door.y
+            )
         }
     }
 
@@ -218,12 +217,11 @@ class RandomGenerator {
     }
 
     private fun generateDoors(
-        map: TileMap,
-        random: Random
+        context: GenerationContext
     ): MutableList<DoorData> {
 
-        val width = map.width
-        val height = map.height
+        val width = context.map.width
+        val height = context.map.height
 
 
     val possible =
@@ -238,7 +236,7 @@ class RandomGenerator {
     // TOP border door
     for(x in borderThickness until width-borderThickness){
 
-        if(map[x,borderThickness] == TileType.FLOOR){
+        if(context.map[x,borderThickness] == TileType.FLOOR){
 
             possible.add(
                 x to borderThickness-1
@@ -252,7 +250,7 @@ class RandomGenerator {
     // BOTTOM border door
     for(x in borderThickness until width-borderThickness){
 
-        if(map[x,height-borderThickness-1] == TileType.FLOOR){
+        if(context.map[x,height-borderThickness-1] == TileType.FLOOR){
 
             possible.add(
                 x to height-borderThickness
@@ -266,7 +264,7 @@ class RandomGenerator {
     // LEFT border door
     for(y in borderThickness until height-borderThickness){
 
-        if(map[borderThickness,y] == TileType.FLOOR){
+        if(context.map[borderThickness,y] == TileType.FLOOR){
 
             possible.add(
                 borderThickness-1 to y
@@ -280,7 +278,7 @@ class RandomGenerator {
     // RIGHT border door
     for(y in borderThickness until height-borderThickness){
 
-        if(map[width-borderThickness-1,y] == TileType.FLOOR){
+        if(context.map[width-borderThickness-1,y] == TileType.FLOOR){
 
             possible.add(
                 width-borderThickness to y
@@ -288,7 +286,7 @@ class RandomGenerator {
 
         }
     }
-        possible.shuffle(random)
+        possible.shuffle(context.random)
 
     return possible
         .take(2)

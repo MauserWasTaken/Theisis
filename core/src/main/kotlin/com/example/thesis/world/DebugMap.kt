@@ -11,6 +11,11 @@ class DebugMap(
         }
     }
 
+    val roomIds = Array(height) {
+        Array(width) {
+            -1
+        }
+        }
 
     fun set(
         x:Int,
@@ -30,6 +35,105 @@ class DebugMap(
     ):DebugType {
 
         return values[y][x]
+    }
+
+    fun getRoomId(
+        x:Int,
+        y:Int
+    ):Int {
+
+        return roomIds[y][x]
+    }
+
+
+    // DEBUG HELPERS
+
+    fun wall(
+        x:Int,
+        y:Int
+    ){
+        set(
+            x,
+            y,
+            DebugType.WALL
+        )
+    }
+
+
+    fun room(
+        id:Int,
+        x:Int,
+        y:Int
+    ){
+
+        set(
+            x,
+            y,
+            DebugType.ROOM
+        )
+
+        // optional later:
+        // store room id separately
+    }
+
+
+    fun path(
+        x:Int,
+        y:Int
+    ){
+        set(
+            x,
+            y,
+            DebugType.PATH
+        )
+    }
+
+
+    fun player(
+        x:Int,
+        y:Int
+    ){
+        set(
+            x,
+            y,
+            DebugType.PLAYER
+        )
+    }
+
+
+    fun enemy(
+        x:Int,
+        y:Int
+    ){
+        set(
+            x,
+            y,
+            DebugType.ENEMY
+        )
+    }
+
+
+    fun barrel(
+        x:Int,
+        y:Int
+    ){
+        set(
+            x,
+            y,
+            DebugType.BARREL
+        )
+    }
+
+
+    fun door(
+        x:Int,
+        y:Int
+    ){
+        set(
+            x,
+            y,
+            DebugType.DOOR
+        )
     }
 
 

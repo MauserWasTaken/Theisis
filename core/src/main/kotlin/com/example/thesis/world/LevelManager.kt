@@ -2,6 +2,7 @@ package com.example.thesis.world
 
 import com.example.thesis.data.DoorData
 import com.example.thesis.data.LevelData
+import com.example.thesis.generator.GenerationSettings
 import com.example.thesis.generator.RandomGenerator
 import kotlin.random.Random
 
@@ -24,8 +25,10 @@ class LevelManager {
 
 
             RandomGenerator().generate(
-                50,
-                40,
+                GenerationSettings(
+                    width = 50,
+                    height = 40
+                ),
                 levelSeed
             )
         }
