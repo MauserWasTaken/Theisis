@@ -5,7 +5,7 @@ data class DoorData(
     val x: Int,
     val y: Int,
 
-    val direction:DoorDirection,
+    val direction:DoorDirection = DoorDirection.NORTH,
 
     var connectedLevel: Int = -1,
     var connectedDoor: Int = -1

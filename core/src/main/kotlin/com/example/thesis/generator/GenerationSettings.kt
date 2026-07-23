@@ -13,6 +13,9 @@ data class GenerationSettings(
 
     val enemyCount: Int = 5,
     val barrelCount: Int = 10,
-    val doorCount: Int = 2
+    val doorCount: Int = 2,
+
+    val roomPadding: Int = 2,
+    val minRoomSize: Int = 5
 
 )

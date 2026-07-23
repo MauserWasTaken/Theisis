@@ -7,7 +7,6 @@ import com.example.thesis.data.LevelData
 import com.example.thesis.data.SavedBarrel
 import com.example.thesis.data.SavedEnemy
 import com.example.thesis.world.DebugMap
-import com.example.thesis.world.DebugType
 import com.example.thesis.world.TileMap
 import com.example.thesis.world.TileType
 import kotlin.random.Random
