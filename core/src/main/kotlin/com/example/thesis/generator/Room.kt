@@ -28,8 +28,11 @@ data class Room(
     val top
         get() = y + height - 1
 
-    fun intersects(other: Room): Boolean
-    {
-        return false
+    fun intersects(other: Room): Boolean {
+
+        return x < other.x + other.width &&
+            x + width > other.x &&
+            y < other.y + other.height &&
+            y + height > other.y
     }
 }

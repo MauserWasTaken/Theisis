@@ -5,9 +5,9 @@ class TileMap(
     val height: Int
 ) {
 
-    val tiles = Array(height) {
-        Array(width) {
-            TileType.FLOOR
+    val tiles = Array(height){
+        Array(width){
+            TileType.WALL
         }
     }
 
@@ -74,8 +74,12 @@ class TileMap(
         return this[nx,ny]
     }
 
-    fun isWall(x: Int, y: Int): Boolean {
-        return isInside(x, y) && this[x, y] == TileType.WALL
+    fun isWall(x:Int,y:Int):Boolean {
+
+        if(!isInside(x,y))
+            return true
+
+        return this[x,y] == TileType.WALL
     }
 
     fun isFloor(x: Int, y: Int): Boolean {

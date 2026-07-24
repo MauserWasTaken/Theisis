@@ -15,7 +15,6 @@ class LevelManager {
 
     var currentLevel = 0
 
-
     fun loadLevel(number:Int):LevelData {
 
         return levels.getOrPut(number) {
@@ -24,7 +23,7 @@ class LevelManager {
                 gameSeed xor number
 
 
-            RandomGenerator().generate(
+            RandomGenerator().generateBSP(
                 GenerationSettings(
                     width = 50,
                     height = 40

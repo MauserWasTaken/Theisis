@@ -16,7 +16,7 @@ class RandomGenerator {
     fun generate(
         settings: GenerationSettings,
         seed: Int
-    ): LevelData{
+    ): LevelData {
 
         val context = GenerationContext(
             map = TileMap(
@@ -81,7 +81,7 @@ class RandomGenerator {
                 it.x to it.y
             }
         )
-        for(enemy in enemies){
+        for (enemy in enemies) {
 
             context.debugMap.enemy(
                 enemy.x,
@@ -125,8 +125,7 @@ class RandomGenerator {
         for (y in 2 until context.map.height - wallSize step wallSize) {
             for (x in 2 until context.map.width - wallSize step wallSize) {
 
-                if (context.random.nextFloat() < settings.wallChance)
-                {
+                if (context.random.nextFloat() < settings.wallChance) {
 
                     wallBuilder.createWall(
                         context.map,
@@ -152,15 +151,15 @@ class RandomGenerator {
 
     private fun collectFloorTiles(
         context: GenerationContext
-    ): MutableList<Pair<Int,Int>> {
+    ): MutableList<Pair<Int, Int>> {
 
         val floorTiles =
-            mutableListOf<Pair<Int,Int>>()
+            mutableListOf<Pair<Int, Int>>()
 
         for (y in 0 until context.map.height) {
             for (x in 0 until context.map.width) {
 
-                if (context.map[x,y] == TileType.FLOOR) {
+                if (context.map[x, y] == TileType.FLOOR) {
                     floorTiles.add(x to y)
                 }
             }
@@ -187,8 +186,8 @@ class RandomGenerator {
     }
 
     private fun spawnEnemies(
-        floorTiles: List<Pair<Int,Int>>
-    ): MutableList<SavedEnemy>{
+        floorTiles: List<Pair<Int, Int>>
+    ): MutableList<SavedEnemy> {
 
         return floorTiles
             .take(5)
@@ -231,99 +230,166 @@ class RandomGenerator {
 
 
         val possible =
-            mutableListOf<Triple<Int,Int,DoorDirection>>()
+            mutableListOf<Triple<Int, Int, DoorDirection>>()
 
 
-
-    val borderThickness = 2
-
+        val borderThickness = 2
 
 
-    // TOP border door
-    for(x in borderThickness until width-borderThickness){
+        // TOP border door
+        for (x in borderThickness until width - borderThickness) {
 
-        if(context.map[x,borderThickness] == TileType.FLOOR){
+            if (context.map[x, borderThickness] == TileType.FLOOR) {
 
-            possible.add(
-                Triple(
-                    x,
-                    borderThickness-1,
-                    DoorDirection.NORTH
+                possible.add(
+                    Triple(
+                        x,
+                        borderThickness - 1,
+                        DoorDirection.NORTH
+                    )
                 )
-            )
 
+            }
         }
-    }
 
 
+        // BOTTOM border door
+        for (x in borderThickness until width - borderThickness) {
 
-    // BOTTOM border door
-    for(x in borderThickness until width-borderThickness){
+            if (context.map[x, height - borderThickness - 1] == TileType.FLOOR) {
 
-        if(context.map[x,height-borderThickness-1] == TileType.FLOOR){
-
-            possible.add(
-                Triple(
-                    x,
-                    height-borderThickness,
-                    DoorDirection.SOUTH
+                possible.add(
+                    Triple(
+                        x,
+                        height - borderThickness,
+                        DoorDirection.SOUTH
+                    )
                 )
-            )
 
+            }
         }
-    }
 
 
+        // LEFT border door
+        for (y in borderThickness until height - borderThickness) {
 
-    // LEFT border door
-    for(y in borderThickness until height-borderThickness){
+            if (context.map[borderThickness, y] == TileType.FLOOR) {
 
-        if(context.map[borderThickness,y] == TileType.FLOOR){
-
-            possible.add(
-                Triple(
-                    borderThickness-1,
-                    y,
-                    DoorDirection.WEST
+                possible.add(
+                    Triple(
+                        borderThickness - 1,
+                        y,
+                        DoorDirection.WEST
+                    )
                 )
-            )
 
+            }
         }
-    }
 
 
+        // RIGHT border door
+        for (y in borderThickness until height - borderThickness) {
 
-    // RIGHT border door
-    for(y in borderThickness until height-borderThickness){
+            if (context.map[width - borderThickness - 1, y] == TileType.FLOOR) {
 
-        if(context.map[width-borderThickness-1,y] == TileType.FLOOR){
-
-            possible.add(
-                Triple(
-                    width-borderThickness,
-                    y,
-                    DoorDirection.EAST
+                possible.add(
+                    Triple(
+                        width - borderThickness,
+                        y,
+                        DoorDirection.EAST
+                    )
                 )
-            )
 
+            }
         }
-    }
         possible.shuffle(context.random)
 
-    return possible
-        .take(2)
-        .mapIndexed { index, pos ->
+        return possible
+            .take(2)
+            .mapIndexed { index, pos ->
 
-            DoorData(
-                id = index,
-                x = pos.first,
-                y = pos.second,
-                direction = pos.third
+                DoorData(
+                    id = index,
+                    x = pos.first,
+                    y = pos.second,
+                    direction = pos.third
+                )
+
+            }
+            .toMutableList()
+    }
+
+    // TEMP BSP TEST
+    fun generateBSP(
+        settings: GenerationSettings,
+        seed: Int
+    ): LevelData {
+
+        val context = GenerationContext(
+            map = TileMap(
+                settings.width,
+                settings.height
+            ),
+
+            debugMap = DebugMap(
+                settings.width,
+                settings.height
+            ),
+
+            random = Random(seed)
+        )
+
+
+        WallBuilder().createBorderWall(
+            context.map,
+            settings.borderThickness
+        )
+
+
+        val rooms =
+            BSPGenerator().generate(context)
+
+        CorridorGenerator()
+            .connectRooms(
+                context,
+                rooms
             )
 
-        }
-        .toMutableList()
-}
-}
 
+        WallVariantGenerator()
+            .generate(
+                context.map
+            )
+
+        require(rooms.isNotEmpty())
+
+
+        println("Generated rooms: ${rooms.size}")
+
+
+        val floorTiles =
+            collectFloorTiles(context)
+
+
+        val playerSpawn =
+            rooms.first().centerX to rooms.first().centerY
+
+
+        return LevelData(
+            map = context.map,
+            playerSpawn = playerSpawn,
+            enemies = mutableListOf(),
+            barrels = mutableListOf(),
+            potions = mutableListOf(),
+            doors = mutableListOf(),
+            debugMap = context.debugMap,
+            seed = seed,
+            generationInfo = GenerationInfo(
+                algorithm = "BSP",
+                width = settings.width,
+                height = settings.height
+            )
+        )
+    }
+}
 

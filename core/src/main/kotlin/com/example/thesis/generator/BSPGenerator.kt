@@ -21,11 +21,6 @@ class BSPGenerator {
             context
         )
 
-        debugNode(
-            root,
-            context
-        )
-
         val rooms = mutableListOf<Room>()
 
 
@@ -44,7 +39,7 @@ class BSPGenerator {
         context: GenerationContext
     ) {
 
-        val minSize = 10
+        val minSize = 16
 
 
         if(
@@ -66,8 +61,8 @@ class BSPGenerator {
 
             val split =
                 context.random.nextInt(
-                    5,
-                    node.height - 5
+                    node.height / 3,
+                    node.height * 2 / 3
                 )
 
 
@@ -91,8 +86,8 @@ class BSPGenerator {
 
             val split =
                 context.random.nextInt(
-                    5,
-                    node.width - 5
+                    node.width / 3,
+                    node.width * 2 / 3
                 )
 
 
@@ -160,6 +155,102 @@ class BSPGenerator {
         context: GenerationContext
     ) {
 
+        if(node.isLeaf()) {
+
+
+            val padding = 2
+
+            val minRoomSize = 8
+
+            val maxRoomWidth =
+                node.width - padding * 2
+
+
+            val maxRoomHeight =
+                node.height - padding * 2
+
+            // leaf is too small
+            if(
+                maxRoomWidth < minRoomSize ||
+                maxRoomHeight < minRoomSize
+            ){
+                return
+            }
+
+
+            val roomWidth =
+                context.random.nextInt(
+                    minRoomSize,
+                    maxRoomWidth
+                )
+
+
+            val roomHeight =
+                context.random.nextInt(
+                    minRoomSize,
+                    maxRoomHeight
+                )
+
+            val roomX =
+                node.x +
+                    context.random.nextInt(
+                        1,
+                        node.width - roomWidth
+                    )
+
+
+            val roomY =
+                node.y +
+                    context.random.nextInt(
+                        1,
+                        node.height - roomHeight
+                    )
+
+
+            val room =
+                Room(
+                    id = rooms.size,
+                    x = roomX,
+                    y = roomY,
+                    width = roomWidth,
+                    height = roomHeight
+                )
+
+
+            node.room = room
+
+            rooms.add(room)
+            println(
+                "Room ${room.id}: ${room.x},${room.y} ${room.width}x${room.height}"
+            )
+
+
+            RoomGenerator().carveRoom(
+                context,
+                room
+            )
+
+
+            return
+        }
+
+
+        node.left?.let {
+            createRooms(
+                it,
+                rooms,
+                context
+            )
+        }
+
+
+        node.right?.let {
+            createRooms(
+                it,
+                rooms,
+                context
+            )
+        }
     }
 
 }
