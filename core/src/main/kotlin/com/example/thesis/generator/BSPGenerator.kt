@@ -155,102 +155,62 @@ class BSPGenerator {
         context: GenerationContext
     ) {
 
-        if(node.isLeaf()) {
-
+        if (node.isLeaf()) {
 
             val padding = 2
-
             val minRoomSize = 8
 
-            val maxRoomWidth =
-                node.width - padding * 2
-
-
-            val maxRoomHeight =
-                node.height - padding * 2
+            val maxRoomWidth = node.width - padding * 2
+            val maxRoomHeight = node.height - padding * 2
 
             // leaf is too small
-            if(
+            if (
                 maxRoomWidth < minRoomSize ||
                 maxRoomHeight < minRoomSize
-            ){
+            ) {
                 return
             }
 
-
             val roomWidth =
-                context.random.nextInt(
-                    minRoomSize,
-                    maxRoomWidth
-                )
-
+                if (maxRoomWidth == minRoomSize) minRoomSize
+                else context.random.nextInt(minRoomSize, maxRoomWidth + 1)
 
             val roomHeight =
-                context.random.nextInt(
-                    minRoomSize,
-                    maxRoomHeight
-                )
+                if (maxRoomHeight == minRoomSize) minRoomSize
+                else context.random.nextInt(minRoomSize, maxRoomHeight + 1)
 
-            val roomX =
-                node.x +
-                    context.random.nextInt(
-                        1,
-                        node.width - roomWidth
-                    )
+            val xOffsetMax = node.width - roomWidth
+            val yOffsetMax = node.height - roomHeight
 
+            val roomX = node.x +
+                if (xOffsetMax <= 1) 0
+                else context.random.nextInt(1, xOffsetMax)
 
-            val roomY =
-                node.y +
-                    context.random.nextInt(
-                        1,
-                        node.height - roomHeight
-                    )
+            val roomY = node.y +
+                if (yOffsetMax <= 1) 0
+                else context.random.nextInt(1, yOffsetMax)
 
-
-            val room =
-                Room(
-                    id = rooms.size,
-                    x = roomX,
-                    y = roomY,
-                    width = roomWidth,
-                    height = roomHeight
-                )
-
+            val room = Room(
+                id = rooms.size,
+                x = roomX,
+                y = roomY,
+                width = roomWidth,
+                height = roomHeight
+            )
 
             node.room = room
-
             rooms.add(room)
+
             println(
                 "Room ${room.id}: ${room.x},${room.y} ${room.width}x${room.height}"
             )
 
-
-            RoomGenerator().carveRoom(
-                context,
-                room
-            )
-
-
+            RoomGenerator().carveRoom(context, room)
             return
         }
 
-
-        node.left?.let {
-            createRooms(
-                it,
-                rooms,
-                context
-            )
-        }
-
-
-        node.right?.let {
-            createRooms(
-                it,
-                rooms,
-                context
-            )
-        }
+        node.left?.let { createRooms(it, rooms, context) }
+        node.right?.let { createRooms(it, rooms, context) }
     }
 
 }

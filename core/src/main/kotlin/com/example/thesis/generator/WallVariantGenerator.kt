@@ -62,9 +62,21 @@ class WallVariantGenerator {
         return when {
 
 
+            !down && !left ->
+                WallTile.BOTTOM_RIGHT
+
+            !down && !right ->
+                WallTile.BOTTOM_LEFT
+
             !down ->
                 WallTile.BOTTOM
 
+
+            !up && !left ->
+                WallTile.TOP_RIGHT
+
+            !up && !right ->
+                WallTile.TOP_LEFT
 
             !up ->
                 WallTile.TOP

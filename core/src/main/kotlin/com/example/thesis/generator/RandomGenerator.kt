@@ -361,6 +361,12 @@ class RandomGenerator {
                 context.map
             )
 
+
+        BrickGenerator()
+            .generate(
+                context.map
+            )
+
         require(rooms.isNotEmpty())
 
 

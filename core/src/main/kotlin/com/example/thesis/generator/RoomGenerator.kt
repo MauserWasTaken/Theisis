@@ -9,8 +9,8 @@ class RoomGenerator {
         room: Room
     ) {
 
-        for (y in room.y + 1 until room.y + room.height - 1) {
-            for (x in room.x + 1 until room.x + room.width - 1) {
+        for (y in room.y + 2 until room.y + room.height - 2){
+            for (x in room.x + 2 until room.x + room.width - 2) {
 
                 context.map[x, y] = TileType.FLOOR
 
